@@ -1,0 +1,690 @@
+* Preamble
+#+BEGIN_SRC emacs-lisp
+  ;; config.el -*- lexical-binding: t; -*-
+
+  ;; In interactive sessions, save a little IO time by skipping the
+  ;; mtime checks on every *.elc file.
+  (setq load-prefer-newer noninteractive)
+
+  ;; Set common directories to be used by various things
+  (defconst user-local-directory (concat user-emacs-directory "local/")
+    "Directory for locally installed Emacs Lisp packages, language
+    servers and other tools.")
+  (defconst user-var-directory (concat user-emacs-directory "var/")
+    "User directory for potentially sensitive data that is not
+    necessary for functionality, such as histories, backups, etc.")
+#+END_SRC
+* Package management
+** Bootstrap =straight.el=
+*** Configuration
+#+BEGIN_SRC emacs-lisp
+  ;; Optimise start-up time
+  (setq straight-base-dir user-local-directory
+        straight-check-for-modifications '(find-when-checking)
+        straight-enable-package-integration nil)
+
+  ;; Optimise network utilisation
+  (setq straight-vc-git-default-clone-depth 1)
+#+END_SRC
+*** Modified code snippet to bootstrap
+    Using =user-local-directory= instead of =user-emacs-directory=.
+
+#+BEGIN_SRC emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-local-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+#+END_SRC
+** Set up =use-package=
+#+BEGIN_SRC emacs-lisp
+  ;; Get use-package and integrate it with straight.el
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
+
+  ;; Enable the :chords keyword in use-package
+  (use-package use-package-chords
+    :config (key-chord-mode t))
+
+  ;; Get delight for the :delight keyword in use-package
+  (use-package delight)
+#+END_SRC
+* Configure for host operating system
+** Initialize environment from shell
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell)
+
+  (defconst +saved-shell-environ+
+    (eval-when-compile
+      (exec-path-from-shell-getenvs exec-path-from-shell-variables))
+    "Shell environment configuration saved at compile time.")
+
+  (dolist (pair +saved-shell-environ+)
+    (cl-destructuring-bind (name . value) pair
+      (exec-path-from-shell-setenv name value)))
+#+END_SRC
+** Homebrew
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'exec-path "/usr/local/bin")
+  (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+    (normal-top-level-add-subdirs-to-load-path))
+#+END_SRC
+** Trash
+#+BEGIN_SRC emacs-lisp
+  (unless (executable-find "trash")
+    (warn "Command-line utility `trash' not found in PATH!"))
+
+  (defvar macos-trash-use-finder t
+    "Whether `trash' should use Finder to move files to Trash.")
+
+  (defun system-move-file-to-trash (filename)
+    "Move the file (or directory) named FILENAME to Trash."
+    (if macos-trash-use-finder
+        (call-process "trash" nil nil nil "-F" "--" filename)
+      (call-process "trash" nil nil nil "--" filename)))
+#+END_SRC
+** GNU ls
+#+BEGIN_SRC emacs-lisp
+  (defconst have-gnu-ls
+    (let ((gls-path (executable-find "gls")))
+      (cond (gls-path
+             (setq insert-directory-program gls-path)
+             t)
+            (t
+             (warn "Failure to find GNU `ls' on the host system.")
+             nil)))
+    "Whether GNU `ls' is available on the system.")
+#+END_SRC
+** =default-directory=
+   On macOS, when launching Emacs from the Launcher, the filesystem
+   root becomes the current working directory.  We correct this to the
+   home directory.
+
+#+BEGIN_SRC emacs-lisp
+  (when (and (eq window-system 'ns)
+             (equal default-directory "/"))
+    (setq default-directory "~/"))
+#+END_SRC
+* Load personal settings
+#+BEGIN_SRC emacs-lisp
+  (load (concat user-emacs-directory "personal.el") nil nil 'nosuffix)
+#+END_SRC
+* Settings not specific to particular buffers
+** Miscellaneous general settings
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-screen t
+        confirm-nonexistent-file-or-buffer t
+        ediff-window-setup-function 'ediff-setup-windows-plain)
+
+  ;; Make request.el use `var' directory
+  (set 'request-storage-directory (concat user-var-directory "request"))
+
+  ;; Disable transient history
+  (set 'transient-save-history nil)
+#+END_SRC
+** Layout and movement settings
+#+BEGIN_SRC emacs-lisp
+  (unless (eq window-system 'ns)
+    (menu-bar-mode -1))
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode -1))
+  (when (fboundp 'tool-bar-mode)
+    (tool-bar-mode -1))
+
+  (windmove-default-keybindings 'super)
+  (windmove-swap-states-default-keybindings)
+#+END_SRC
+** macOS settings
+*** Apple keyboard
+#+BEGIN_SRC emacs-lisp
+  (when (boundp 'ns-right-alternate-modifier)
+    (setq ns-right-alternate-modifier 'none))
+#+END_SRC
+*** Automatically match Aqua theme
+#+BEGIN_SRC emacs-lisp
+  (when (boundp 'ns-system-appearance-change-functions)
+    (add-hook
+     'ns-system-appearance-change-functions
+     (lambda (appearance)
+       (mapc #'disable-theme custom-enabled-themes)
+       (pcase appearance
+         ('light
+          (load-theme 'tango t))
+         ('dark
+          (load-theme 'tango-dark t))))))
+#+END_SRC
+*** macOS current location
+#+BEGIN_SRC emacs-lisp
+  (use-package osx-location
+    :commands osx-location-watch
+    :config
+    (add-hook
+     'osx-location-changed-hook
+     (lambda ()
+       (setq calendar-latitude osx-location-latitude
+             calendar-longitude osx-location-longitude
+             calendar-location-name "current location"))))
+#+END_SRC
+** TODO Auto-save and interlocking
+   Setting =auto-save-default= and =create-lockfiles= to =nil=
+   disables them.
+** Backup settings
+#+BEGIN_SRC emacs-lisp
+  (setq backup-by-copying-when-linked t
+        backup-by-copying-when-mismatch t
+        backup-directory-alist `(("." . ,(concat user-var-directory "backups")))
+        delete-old-versions t
+        kept-new-versions 8
+        kept-old-versions 1
+        version-control t)
+#+END_SRC
+** Revert individual buffers when files on disk change
+#+BEGIN_SRC emacs-lisp
+  (setq auto-revert-use-notify t)
+  (global-auto-revert-mode t)
+#+END_SRC
+** Automatically save place in files
+#+BEGIN_SRC emacs-lisp
+  (setq save-place-file (concat user-var-directory "places")
+        save-place-version-control 'never)
+  (save-place-mode t)
+#+END_SRC
+** Maintain a list of recent files
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+    :straight nil
+    :config
+    (dolist (path `(,(expand-file-name "../lisp" data-directory)
+                    ,(expand-file-name "straight" user-local-directory)))
+      (add-to-list 'recentf-exclude (concat "^" (regexp-quote path))))
+    (setq recentf-save-file (concat user-var-directory "recentf"))
+    (recentf-mode t))
+#+END_SRC
+*** TODO Consider configuring =recentf-auto-cleanup=
+** Convenience packages
+*** Icomplete mode
+#+BEGIN_SRC emacs-lisp
+  (icomplete-mode t)
+#+END_SRC
+*** Ivy, Counsel, & Ivy-rich
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :defer t)
+
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+           ([remap describe-function] . counsel-describe-function)
+           ([remap describe-variable] . counsel-describe-variable)))
+
+  (use-package ivy-rich
+    :after counsel
+    :config (ivy-rich-mode t))
+#+END_SRC
+*** Which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :delight which-key-mode
+    :config (which-key-mode t))
+#+END_SRC
+*** Ibuffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [remap list-buffers] #'ibuffer)
+#+END_SRC
+** Finding files by name and by content
+#+BEGIN_SRC emacs-lisp
+  (defun interactive-rgrep ()
+    "Recursively and interactively search directory."
+    (interactive)
+    (let ((initial-directory
+           (read-directory-name "Base directory: " nil nil t)))
+      (counsel-rg nil initial-directory)))
+
+  (bind-keys ("C-c f r" . counsel-buffer-or-recentf)
+             ("C-c f g" . counsel-git)
+             ("C-c s g" . counsel-git-grep)
+             ("C-c s d" . counsel-rg))
+#+END_SRC
+*** TODO Expand and configure this further!
+* Generic buffer editing, editing visuals, and buffer navigation
+** Miscellaneous settings
+#+BEGIN_SRC emacs-lisp
+  ;; Make typing delete selection as in most modern text editors
+  (delete-selection-mode t)
+
+  ;; More often than not, files should end with a final newline
+  (setq require-final-newline t)
+
+  ;; Maximum decoration unless otherwise specified later
+  (setq font-lock-maximum-decoration '((t . t)))
+
+  ;; Highlight matching parenthesis
+  (show-paren-mode t)
+
+  ;; Highlight some keywords
+  (use-package hl-todo
+    :config (global-hl-todo-mode t))
+
+  ;; Prettify page break characters in Help buffers
+  (use-package page-break-lines
+    :hook (help-mode . page-break-lines-mode))
+#+END_SRC
+** Cut and paste and mouse use
+#+BEGIN_SRC emacs-lisp
+  (setq kill-do-not-save-duplicates t
+        mouse-drag-and-drop-region 'meta
+        mouse-yank-at-point t
+        save-interprogram-paste-before-kill t)
+#+END_SRC
+** No insidious hiding of tabs by default
+#+BEGIN_SRC emacs-lisp
+  ;; Do not insert tabs by default
+  (setq-default indent-tabs-mode nil)
+
+  ;; Do not hide tabs when deleting
+  (setq backward-delete-char-untabify-method nil)
+#+END_SRC
+** Whitespace highlighting
+#+BEGIN_SRC emacs-lisp
+  (use-package whitespace
+    :straight nil
+    :delight global-whitespace-mode
+    :config
+    (setq whitespace-global-modes '())
+    (global-whitespace-mode t))
+
+  (defconst highlight-tabs-style '(face tabs tab-mark)
+    "Whitespace highlighting when indenting with spaces.")
+
+  (defconst highlight-spaces-style
+    '(face indentation space-before-tab space-after-tab)
+    "Whitespace highlighting when indenting with tabs.")
+
+  (defun set-whitespace-style (style)
+    "Configure whitespace highlighting with STYLE."
+    (setq-local whitespace-style style)
+    (whitespace-turn-off)
+    (whitespace-turn-on-if-enabled))
+
+  (defun reset-whitespace-style ()
+    "Reset whitespace highlighting to highlight everything."
+    (interactive)
+    (set-whitespace-style (default-value 'whitespace-style)))
+
+  (defun indent-tabs-mode (&optional arg)
+    "Toggle or set `indent-tabs-mode'."
+    (interactive (list (or current-prefix-arg 'toggle)))
+    (let ((value
+           (if (eq arg 'toggle)
+               (not indent-tabs-mode)
+             (> (prefix-numeric-value arg) 0))))
+      (setq-local indent-tabs-mode value)
+      (set-whitespace-style
+       (if value highlight-spaces-style highlight-tabs-style))))
+
+  (defun indent-with-tabs ()
+    "Configure indentation with tabs."
+    (interactive)
+    (indent-tabs-mode 1))
+
+  (defun indent-with-spaces ()
+    "Configure indentation with spaces."
+    (interactive)
+    (indent-tabs-mode -1))
+#+END_SRC
+** Unobtrusively remove trailing whitespace
+#+BEGIN_SRC emacs-lisp
+  (use-package ws-butler
+    :delight ws-butler-mode
+    :config (ws-butler-global-mode t))
+#+END_SRC
+** Auto-completion
+#+BEGIN_SRC emacs-lisp
+  (use-package hippie-exp
+    :straight nil
+    :bind ("M-/" . hippie-expand)
+    :config
+    (setq hippie-expand-try-functions-list
+          (cl-set-difference hippie-expand-try-functions-list
+                             '(try-expand-line try-expand-list))))
+
+  (use-package company
+    :defer 1
+    :delight company-mode
+    :config (global-company-mode))
+#+END_SRC
+** Avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :chords (",." . avy-goto-char)
+    :bind (:map isearch-mode-map
+          ("<C-return>" . avy-isearch)))
+#+END_SRC
+* Specific minor modes
+** Lisp editing
+#+BEGIN_SRC emacs-lisp
+  (use-package paredit
+    :demand t
+    :hook ((emacs-lisp-mode
+            eval-expression-minibuffer-setup
+            ielm-mode
+            lisp-mode
+            sly-mrepl-mode) . enable-paredit-mode))
+#+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  ;; Flycheck
+  (use-package flycheck
+    :hook (emacs-startup . global-flycheck-mode)
+    :config
+    (setq flycheck-global-modes '()
+          flycheck-check-syntax-automatically '(mode-enabled save)))
+#+END_SRC
+** Spelling and grammar
+#+BEGIN_SRC emacs-lisp
+  (use-package guess-language
+    :defer t
+    :hook (flyspell-mode . (lambda ()
+                             (guess-language-mode (if flyspell-mode 1 -1))))
+    :config
+    (setq guess-language-languages '(en de hu la)
+          guess-language-langcodes
+          '((en "en_GB" "English")
+            (de "de_DE" "German")
+            (hu "hu_HU" nil)
+            (la "la" nil))))
+
+  (use-package langtool
+    :defer t
+    :config
+    (setq langtool-language-tool-server-jar
+          "/usr/local/opt/languagetool/libexec/languagetool-server.jar"
+          langtool-server-user-arguments
+          `("--port" "8082" "--config"
+            ,(expand-file-name
+              (concat user-emacs-directory "languagetool.properties")))))
+#+END_SRC
+* Special major modes
+** Dired
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :straight nil
+    :init
+    (setq delete-by-moving-to-trash t)
+    :config
+    (setq dired-dwim-target t)
+    (when have-gnu-ls
+      (setq dired-listing-switches
+            (string-join '("-ahl" "-v" "--group-directories-first") " "))))
+#+END_SRC
+** Emacs shell
+#+BEGIN_SRC emacs-lisp
+  (use-package eshell
+    :straight nil
+    :bind ("s-t" . eshell)
+    :custom
+    (eshell-aliases-file
+     (expand-file-name "eshell_aliases" user-emacs-directory))
+    (eshell-history-file-name
+     (expand-file-name "eshell_history" user-var-directory))
+    (eshell-last-dir-ring-file-name nil))
+#+END_SRC
+** Terminal emulation
+#+BEGIN_SRC emacs-lisp
+  (use-package vterm)
+#+END_SRC
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :commands magit-after-save-refresh-status
+    :bind
+    ("C-x g" . magit-status)
+    :config
+    (setq magit-delete-by-moving-to-trash nil
+          magit-diff-refine-hunk t)
+    (global-magit-file-mode t)
+    (add-hook 'after-save-hook #'magit-after-save-refresh-status))
+#+END_SRC
+** Mail
+#+BEGIN_SRC emacs-lisp
+  (setq mail-envelope-from 'header
+        mail-specify-envelope-from t
+        message-kill-buffer-on-exit t
+        send-mail-function 'sendmail-send-it
+        sendmail-program "/usr/local/bin/msmtp")
+#+END_SRC
+*** Notmuch
+#+BEGIN_SRC emacs-lisp
+  (use-package notmuch
+    :bind ("C-x M-m" . notmuch)
+    :init
+    (define-advice compose-mail (:before (&rest ignored) "notmuch")
+      ignored
+      (require 'notmuch))
+    :config
+    (setq notmuch-draft-folder (format "%s/Drafts" user-mail-address)
+          notmuch-fcc-dirs `((".*" . ,(format "%s/Sent" user-mail-address)))
+          notmuch-search-oldest-first nil))
+
+  (use-package counsel-notmuch
+    :bind (:map notmuch-hello-mode-map
+           ("s" . counsel-notmuch)))
+#+END_SRC
+** PDF tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+    :magic ("%PDF" . pdf-view-mode)
+    :config
+    ;; Enable hiDPI support, but at the cost of memory!
+    ;; See politza/pdf-tools#51
+    (setq pdf-view-use-scaling t
+          pdf-view-use-imagemagick nil)
+
+    ;; Add retina support for MacOS users
+    (when (eq system-type 'darwin)
+      (advice-add #'pdf-util-frame-scale-factor :around
+                  #'+pdf--util-frame-scale-factor-a)
+      (advice-add #'pdf-view-use-scaling-p :before-until
+                  #'+pdf--view-use-scaling-p-a)
+      (dolist (fn '(pdf-annot-show-annotation
+                    pdf-isearch-hl-matches
+                    pdf-view-display-region))
+        (advice-add fn :around #'+pdf--supply-width-to-create-image-calls-a)))
+
+    ;; Install epdfinfo binary if needed
+    (unless (file-executable-p pdf-info-epdfinfo-program)
+      (pdf-tools-install))
+    (pdf-tools-install-noverify))
+
+  (eval-when-compile
+    (require 'pdf-tools))
+
+  (defun +pdf--util-frame-scale-factor-a (orig-fn)
+    (if (and pdf-view-use-scaling
+             (memq (pdf-view-image-type) '(imagemagick image-io))
+             (fboundp 'frame-monitor-attributes))
+        (funcall orig-fn)
+      ;; Add special support for retina displays on MacOS
+      (if (and (eq (framep-on-display) 'ns)
+               (> emacs-major-version 26))
+          2
+        1)))
+
+  (defun +pdf--view-use-scaling-p-a ()
+    "Returns t if on ns window-system on Emacs 27+."
+    (and (eq (framep-on-display) 'ns)
+         (> emacs-major-version 26)
+         pdf-view-use-scaling))
+
+  (defun +pdf--supply-width-to-create-image-calls-a (orig-fn &rest args)
+    (let ((create-image (symbol-function #'create-image)))
+      (cl-letf
+          (((symbol-function #'create-image)
+            (lambda
+              (file-or-data &optional type data-p &rest props)
+              (apply create-image file-or-data type data-p
+                     :width (car (pdf-view-image-size))
+                     props))))
+        (ignore create-image)
+        (apply orig-fn args))))
+#+END_SRC
+* Major editing modes
+** Emacs Lisp
+#+BEGIN_SRC emacs-lisp
+  ;; Indent Emacs Lisp with spaces
+  (add-to-list 'whitespace-global-modes 'emacs-lisp-mode)
+  (add-hook 'emacs-lisp-mode-hook #'indent-with-spaces)
+#+END_SRC
+** Common Lisp
+#+BEGIN_SRC emacs-lisp
+  ;; Common Lisp
+  (use-package sly
+    :defer t
+    :init
+    ;; Use Clozure CL
+    (add-to-list 'exec-path-from-shell-variables "CCL_DEFAULT_DIRECTORY")
+    (setq inferior-lisp-program "ccl64")
+    ;; Hyperspec location
+    (setq common-lisp-hyperspec-root
+          "/usr/local/share/doc/hyperspec/HyperSpec/"
+          common-lisp-hyperspec-symbol-table
+          (concat common-lisp-hyperspec-root "Data/Map_Sym.txt")
+          common-lisp-hyperspec-issuex-table
+          (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
+    :config
+    ;; Sly completions
+    (setq sly-complete-symbol-function 'sly-simple-completions))
+
+  ;; Indent Common Lisp with spaces
+  (add-to-list 'whitespace-global-modes 'lisp-mode)
+  (add-hook 'lisp-mode-hook #'indent-with-spaces)
+#+END_SRC
+** Language Server Protocol
+#+BEGIN_SRC emacs-lisp
+  ;; Language server protocol settings
+  (use-package lsp-mode
+    :commands lsp
+    :init
+    (setq read-process-output-max (* 1024 1024))
+    (setq lsp-diagnostics-provider :none
+          lsp-modeline-diagnostics-enable nil)
+    :config
+    ;; Use `local' and `var' directories
+    (setq lsp-server-install-dir
+          (expand-file-name "lsp" user-local-directory))
+    (setq lsp-session-file
+          (let* ((default-file-name (file-name-nondirectory lsp-session-file))
+                 (file-name (string-trim default-file-name (regexp-quote "."))))
+            (expand-file-name file-name user-var-directory))))
+
+  (use-package lsp-ui
+    :after lsp-mode
+    :init (setq lsp-ui-doc-enable nil))
+#+END_SRC
+** C
+#+BEGIN_SRC emacs-lisp
+  (use-package cc-vars
+    :straight nil
+    :defer t
+    :config
+    (setcdr (assoc 'other c-default-style) "linux")
+    (add-to-list 'whitespace-global-modes 'c-mode)
+    (add-hook 'c-mode-common-hook #'indent-with-tabs))
+#+END_SRC
+** Python
+#+BEGIN_SRC emacs-lisp
+  ;; Use lsp-mode
+  (add-hook 'python-mode-hook #'lsp)
+
+  ;; Use Flycheck, but not with pylint
+  (eval-after-load 'flycheck
+    (lambda ()
+      (add-to-list 'flycheck-global-modes 'python-mode)
+      (push 'python-pylint (default-value 'flycheck-disabled-checkers))))
+
+  ;; Python environment
+  (use-package pyvenv
+    :defer t
+    :init (setenv "WORKON_HOME" "~/.pyenv/versions")
+    :config (pyvenv-mode t))
+
+  ;; Emacs IPython Notebook
+  (use-package ein
+    :defer t)
+#+END_SRC
+** JavaScript
+#+BEGIN_SRC emacs-lisp
+  (use-package js
+    :straight nil
+    :defer t
+    :custom
+    (js-indent-level 2))
+
+  (use-package js2-mode
+    :mode ("\\.js\\'" . js2-mode)
+    :init
+    (add-hook 'js2-mode-hook #'lsp))
+#+END_SRC
+** Org mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files '("~/Sync/org/"))
+  (setq org-archive-location "~/Sync/archive.org.gz::")
+
+  (add-hook
+   'org-mode-hook
+   (lambda ()
+     (setq-local langtool-disabled-rules
+                 '("WHITESPACE_RULE"
+                   "DE_CASE"
+                   "DE_DU_UPPER_LOWER"
+                   "FALSCHE_VERWENDUNG_DES_BINDESTRICHS"
+                   "GERMAN_SPELLER_RULE"
+                   "LEERZEICHEN_HINTER_DOPPELPUNKT"))))
+#+END_SRC
+** LaTeX
+#+BEGIN_SRC emacs-lisp
+  (use-package auctex
+    :defer t
+    :init
+    ;; Ask AUCTeX to use PDFLaTeX
+    (setq TeX-PDF-mode t))
+#+END_SRC
+** Miscellaneous major modes
+#+BEGIN_SRC emacs-lisp
+  ;; Writable grep buffers
+  (use-package wgrep
+    :defer t)
+
+  ;; Yet Another Markup Language
+  (use-package yaml-mode
+    :defer t)
+
+  ;; Gregorio GABC files
+  (use-package gregorio-mode
+    :defer t)
+#+END_SRC
+* Final personal settings and customisation
+** Post-init personal settings
+#+BEGIN_SRC emacs-lisp
+  (when (fboundp 'post-init-personal-settings)
+    (post-init-personal-settings))
+#+END_SRC
+** Customize
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (concat user-emacs-directory "custom.el"))
+  (load custom-file)
+#+END_SRC
+** Start server
+#+BEGIN_SRC emacs-lisp
+  (use-package server
+    :config
+    (unless (server-running-p)
+      (server-start)))
+#+END_SRC
