@@ -370,6 +370,7 @@
 ** Lisp editing
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
+    :straight (paredit :depth full)
     :demand t
     :hook ((emacs-lisp-mode
             eval-expression-minibuffer-setup
