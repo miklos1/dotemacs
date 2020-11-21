@@ -622,6 +622,47 @@
   (use-package ein
     :defer t)
 #+END_SRC
+*** COMMENT Alternative Python configurations
+**** elpy configuration
+ #+BEGIN_SRC elisp
+ ;; Python
+ (elpy-enable)
+ (setq elpy-rpc-python-command "/usr/local/bin/python3")
+ (setq elpy-test-runner 'elpy-test-pytest-runner
+       elpy-modules (remove 'elpy-module-highlight-indentation elpy-modules))
+ #+END_SRC
+**** anaconda-mode
+ #+BEGIN_SRC elisp
+ (straight-use-package 'anaconda-mode)
+ (straight-use-package 'pyenv-mode)
+ (straight-use-package 'company-anaconda)
+
+ (add-hook 'python-mode-hook 'anaconda-mode)
+ (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+ #+END_SRC
+**** eglot
+ #+BEGIN_SRC elisp
+ (require 'project)
+ (use-package eglot
+   :hook (python-mode . eglot-ensure))
+ #+END_SRC
+**** nox
+ #+BEGIN_SRC elisp
+ (straight-use-package '(nox :type git :host github :repo "manateelazycat/nox"))
+ (add-hook 'python-mode-hook #'nox-ensure)
+ #+END_SRC
+**** Microsoft language servers
+ #+BEGIN_SRC elisp
+ (use-package lsp-python-ms)
+ (use-package lsp-pyright
+   :straight (:type git :host github :repo "emacs-lsp/lsp-pyright"))
+ #+END_SRC
+**** Cython & pytest
+ #+BEGIN_SRC elisp
+ (straight-use-package 'cython-mode)
+ (straight-use-package 'flycheck-cython)
+ (straight-use-package 'python-pytest)  ;; requires projectile
+ #+END_SRC
 ** JavaScript
 #+BEGIN_SRC emacs-lisp
   (use-package js
