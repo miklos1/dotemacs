@@ -591,13 +591,15 @@
 #+END_SRC
 ** C
 #+BEGIN_SRC emacs-lisp
-  (use-package cc-vars
-    :straight nil
-    :defer t
-    :config
-    (setcdr (assoc 'other c-default-style) "linux")
-    (add-to-list 'whitespace-global-modes 'c-mode)
-    (add-hook 'c-mode-common-hook #'indent-with-tabs))
+  (eval-when-compile
+    (require 'cc-vars))
+
+  (eval-after-load 'cc-vars
+    (lambda ()
+      (setcdr (assoc 'other c-default-style) "linux")
+      (add-to-list 'whitespace-global-modes 'c-mode)
+      (add-hook 'c-mode-common-hook #'indent-with-tabs)
+      (add-hook 'c-mode-common-hook #'electric-pair-local-mode)))
 #+END_SRC
 ** Python
 #+BEGIN_SRC emacs-lisp
@@ -691,6 +693,7 @@
     ;; Ask AUCTeX to use PDFLaTeX
     (setq TeX-PDF-mode t))
 #+END_SRC
+*** NEXT Research whether auctex-latexmk is of any use               :online:
 ** Miscellaneous major modes
 #+BEGIN_SRC emacs-lisp
   ;; Writable grep buffers
