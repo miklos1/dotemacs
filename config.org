@@ -635,8 +635,17 @@
 #+END_SRC
 ** Org mode
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files '("~/Sync/org/"))
-  (setq org-archive-location "~/Sync/archive.org.gz::")
+  (setq org-archive-location "~/Sync/archive.org.gz::"
+        org-enforce-todo-dependencies t
+        org-agenda-start-on-weekday nil
+        org-agenda-todo-ignore-scheduled 'future)
+
+  (setq org-agenda-files
+        (list "~/Sync/org/" (concat user-emacs-directory "config.org"))
+        org-todo-keywords
+        '((sequence "TODO" "|" "DONE")
+          (sequence "NEXT" "|" "TICK")
+          (sequence "WAITING" "|" "OCCURRED")))
 
   (add-hook
    'org-mode-hook
