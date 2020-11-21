@@ -658,6 +658,31 @@
                    "GERMAN_SPELLER_RULE"
                    "LEERZEICHEN_HINTER_DOPPELPUNKT"))))
 #+END_SRC
+*** COMMENT Old configuration
+#+BEGIN_SRC elisp
+  ;; Org-mode
+  (require 'org-notmuch "~/.emacs.d/org-notmuch.el")
+  (add-hook 'org-mode-hook 'auto-fill-mode t)
+  (add-hook 'org-mode-hook 'flyspell-mode t)
+  ;; (setq org-support-shift-select 'always)
+
+  ;; (setq org-agenda-default-appointment-duration 30)
+  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
+  (setq org-agenda-show-all-dates nil)
+
+  ;; (setq org-refile-targets '((org-agenda-files . (:level . 1))))
+
+  (defun my/org-next-week (&optional arg)
+    "Increase the date in each time stamp of the buffer by one week.
+  With prefix ARG, change that many weeks."
+    (interactive "p")
+    (let ((days (* 7 (prefix-numeric-value arg))))
+      (save-excursion
+        (beginning-of-buffer)
+        (while (search-forward "<" nil t)
+          (when (org-at-timestamp-p)
+            (org-timestamp-up-day days))))))
+#+END_SRC
 ** LaTeX
 #+BEGIN_SRC emacs-lisp
   (use-package auctex
