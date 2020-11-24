@@ -734,7 +734,6 @@
     ;; Ask AUCTeX to use PDFLaTeX
     (setq TeX-PDF-mode t))
 #+END_SRC
-*** NEXT Research whether auctex-latexmk is of any use               :online:
 ** Miscellaneous major modes
 #+BEGIN_SRC emacs-lisp
   ;; Writable grep buffers
