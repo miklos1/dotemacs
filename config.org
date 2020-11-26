@@ -684,7 +684,7 @@
         org-agenda-todo-ignore-scheduled 'future)
 
   (setq org-agenda-files
-        (list "~/Sync/org/" (concat user-emacs-directory "config.org"))
+        '("~/Sync/org/")
         org-todo-keywords
         '((sequence "TODO" "|" "DONE")
           (sequence "NEXT" "|" "TICK")
