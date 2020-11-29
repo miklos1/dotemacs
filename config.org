@@ -114,7 +114,9 @@
 #+END_SRC
 * Load personal settings
 #+BEGIN_SRC emacs-lisp
-  (load (concat user-emacs-directory "personal.el") nil nil 'nosuffix)
+  (let ((personal-file (concat user-emacs-directory "personal.el")))
+    (when (file-exists-p personal-file)
+      (load personal-file nil nil 'nosuffix)))
 #+END_SRC
 * Settings not specific to particular buffers
 ** Miscellaneous general settings
