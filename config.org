@@ -770,3 +770,12 @@
     (unless (server-running-p)
       (server-start)))
 #+END_SRC
+* Tangle configuration automatically after each save
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'safe-local-eval-forms
+               '(add-hook 'after-save-hook #'org-babel-tangle nil 'local))
+#+END_SRC
+
+# Local variables:
+# eval: (add-hook 'after-save-hook #'org-babel-tangle nil 'local)
+# End:
