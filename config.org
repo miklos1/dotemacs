@@ -571,6 +571,49 @@
   (add-to-list 'whitespace-global-modes 'lisp-mode)
   (add-hook 'lisp-mode-hook #'indent-with-spaces)
 #+END_SRC
+** Org mode
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :straight org-plus-contrib
+    :custom
+    (org-modules '(ol-notmuch)))
+
+  (setq org-archive-location "~/Sync/archive.org.gz::"
+        org-enforce-todo-dependencies t
+        org-agenda-start-on-weekday nil
+        org-agenda-todo-ignore-scheduled 'future)
+
+  (setq org-agenda-files
+        '("~/Sync/org/")
+        org-todo-keywords
+        '((sequence "TODO" "|" "DONE")
+          (sequence "NEXT" "|" "TICK")
+          (sequence "WAITING" "|" "OCCURRED")))
+
+  (add-hook
+   'org-mode-hook
+   (lambda ()
+     (setq-local langtool-disabled-rules
+                 '("WHITESPACE_RULE"
+                   "DE_CASE"
+                   "DE_DU_UPPER_LOWER"
+                   "FALSCHE_VERWENDUNG_DES_BINDESTRICHS"
+                   "GERMAN_SPELLER_RULE"
+                   "LEERZEICHEN_HINTER_DOPPELPUNKT"))))
+#+END_SRC
+*** COMMENT Old configuration
+#+BEGIN_SRC elisp
+  ;; Org-mode
+  (add-hook 'org-mode-hook 'auto-fill-mode t)
+  (add-hook 'org-mode-hook 'flyspell-mode t)
+  ;; (setq org-support-shift-select 'always)
+
+  ;; (setq org-agenda-default-appointment-duration 30)
+  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
+  (setq org-agenda-show-all-dates nil)
+
+  ;; (setq org-refile-targets '((org-agenda-files . (:level . 1))))
+#+END_SRC
 ** Language Server Protocol
 #+BEGIN_SRC emacs-lisp
   ;; Language server protocol settings
@@ -679,49 +722,6 @@
     :mode ("\\.js\\'" . js2-mode)
     :init
     (add-hook 'js2-mode-hook #'lsp))
-#+END_SRC
-** Org mode
-#+BEGIN_SRC emacs-lisp
-  (use-package org
-    :straight org-plus-contrib
-    :custom
-    (org-modules '(ol-notmuch)))
-
-  (setq org-archive-location "~/Sync/archive.org.gz::"
-        org-enforce-todo-dependencies t
-        org-agenda-start-on-weekday nil
-        org-agenda-todo-ignore-scheduled 'future)
-
-  (setq org-agenda-files
-        '("~/Sync/org/")
-        org-todo-keywords
-        '((sequence "TODO" "|" "DONE")
-          (sequence "NEXT" "|" "TICK")
-          (sequence "WAITING" "|" "OCCURRED")))
-
-  (add-hook
-   'org-mode-hook
-   (lambda ()
-     (setq-local langtool-disabled-rules
-                 '("WHITESPACE_RULE"
-                   "DE_CASE"
-                   "DE_DU_UPPER_LOWER"
-                   "FALSCHE_VERWENDUNG_DES_BINDESTRICHS"
-                   "GERMAN_SPELLER_RULE"
-                   "LEERZEICHEN_HINTER_DOPPELPUNKT"))))
-#+END_SRC
-*** COMMENT Old configuration
-#+BEGIN_SRC elisp
-  ;; Org-mode
-  (add-hook 'org-mode-hook 'auto-fill-mode t)
-  (add-hook 'org-mode-hook 'flyspell-mode t)
-  ;; (setq org-support-shift-select 'always)
-
-  ;; (setq org-agenda-default-appointment-duration 30)
-  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
-  (setq org-agenda-show-all-dates nil)
-
-  ;; (setq org-refile-targets '((org-agenda-files . (:level . 1))))
 #+END_SRC
 ** LaTeX
 #+BEGIN_SRC emacs-lisp
