@@ -467,7 +467,7 @@
 *** Notmuch
 #+BEGIN_SRC emacs-lisp
   (use-package notmuch
-    :bind ("C-x M-m" . notmuch)
+    :bind ("C-c m" . notmuch)
     :init
     (define-advice compose-mail (:before (&rest ignored) "notmuch")
       ignored
