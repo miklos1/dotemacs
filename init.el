@@ -6,20 +6,9 @@
           (lambda ()
             (setq gc-cons-threshold (* 4 1024 1024))))
 
-;; In interactive sessions, save a little IO time by skipping the
-;; mtime checks on every *.elc file.
-(setq load-prefer-newer noninteractive)
-
-;; Load configuration tangled from Org file
-(require 'org)
-(let* ((config.org (expand-file-name "config.org" user-emacs-directory))
-       (config (file-name-sans-extension config.org))
+;; Load newer configuration file, and re-compile if necessary
+(let* ((config (expand-file-name "config" user-emacs-directory))
        (config.el (concat config ".el")))
-  ;; c.f. org-babel-load-file
-  (unless (org-file-newer-than-p
-           config.el
-           (file-attribute-modification-time (file-attributes config.org)))
-    (org-babel-tangle-file config.org config.el "emacs-lisp"))
   (let ((load-prefer-newer t))
     (load config))
   (byte-recompile-file config.el nil 0))
