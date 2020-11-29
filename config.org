@@ -682,6 +682,11 @@
 #+END_SRC
 ** Org mode
 #+BEGIN_SRC emacs-lisp
+  (use-package org
+    :straight org-plus-contrib
+    :custom
+    (org-modules '(ol-notmuch)))
+
   (setq org-archive-location "~/Sync/archive.org.gz::"
         org-enforce-todo-dependencies t
         org-agenda-start-on-weekday nil
