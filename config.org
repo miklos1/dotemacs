@@ -685,7 +685,10 @@
   (use-package org
     :straight org-plus-contrib
     :custom
-    (org-modules '(ol-notmuch)))
+    (org-modules '(ol-notmuch))
+    (org-ellipsis "⤵")
+    :custom-face
+    (org-ellipsis ((t ()))))
 
   (setq org-archive-location "~/Sync/archive.org.gz::"
         org-enforce-todo-dependencies t
