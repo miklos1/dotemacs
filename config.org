@@ -585,9 +585,7 @@
         org-agenda-start-on-weekday nil
         org-agenda-todo-ignore-scheduled 'future)
 
-  (setq org-agenda-files
-        '("~/Sync/org/")
-        org-todo-keywords
+  (setq org-todo-keywords
         '((sequence "REMIND" "WEEKLY" "|")
           (type "TODO" "NEXT" "WAIT" "|" "DONE")))
 
