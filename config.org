@@ -575,6 +575,8 @@
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :straight org-plus-contrib
+    :bind (("C-c a" . org-agenda)
+           ("C-c c" . org-capture))
     :custom
     (org-modules '(ol-notmuch)))
 
