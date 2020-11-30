@@ -585,9 +585,11 @@
         :bind (("C-c a" . org-agenda)
                ("C-c c" . org-capture))
         :custom
-        (org-modules '(ol-notmuch)))
+        (org-modules '(ol-notmuch))
+        :config
+        (add-hook 'org-mode-hook #'turn-on-auto-fill))
     #+END_SRC
-*** Defined TODO keywords and dependencies
+*** Define TODO keywords and dependencies
     By default, =org-mode= recognises the =TODO= and =DONE= keywords
     only.  We extend this with two new types of actionable items:
     * =NEXT= marks *next actions* according to GTD terminology.  They
@@ -598,7 +600,8 @@
     Thus =TODO= remains for what GTD calls *projects*: tasks to be
     accomplished that usually need a closer analysis.
     #+BEGIN_SRC emacs-lisp
-      (set 'org-todo-keywords '((type "TODO" "NEXT" "WAIT" "|" "DONE")))
+      (set 'org-todo-keywords nil)
+      (push '(type "TODO" "NEXT" "WAIT" "|" "DONE") org-todo-keywords)
     #+END_SRC
 
     To be able to dim or hide blocked actions, we must enforce TODO
@@ -621,7 +624,7 @@
     * =WEEKLY= marks headings that come up at the /weekly/ review.  It
       may also be scheduled for further delay.
     #+BEGIN_SRC emacs-lisp
-      (add-to-list 'org-todo-keywords '(sequence "REMIND" "WEEKLY" "|"))
+      (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
     #+END_SRC
 *** Custom agenda commands
     #+BEGIN_SRC emacs-lisp
@@ -653,7 +656,6 @@
 *** COMMENT Old configuration
 #+BEGIN_SRC elisp
   ;; Org-mode
-  (add-hook 'org-mode-hook 'auto-fill-mode t)
   (add-hook 'org-mode-hook 'flyspell-mode t)
   ;; (setq org-support-shift-select 'always)
 
