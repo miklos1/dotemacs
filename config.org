@@ -586,9 +586,8 @@
   (setq org-agenda-files
         '("~/Sync/org/")
         org-todo-keywords
-        '((sequence "TODO" "|" "DONE")
-          (sequence "NEXT" "|" "TICK")
-          (sequence "WAITING" "|" "OCCURRED")))
+        '((sequence "REMIND" "WEEKLY" "|")
+          (type "TODO" "NEXT" "WAIT" "|" "DONE")))
 
   (add-hook
    'org-mode-hook
