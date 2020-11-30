@@ -623,6 +623,17 @@
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'org-todo-keywords '(sequence "REMIND" "WEEKLY" "|"))
     #+END_SRC
+*** Custom agenda commands
+    #+BEGIN_SRC emacs-lisp
+      (set 'org-agenda-custom-commands
+           '(("i" "Immediate view"
+              ((agenda "" ((org-agenda-span 'day)
+                           (org-agenda-skip-function
+                            '(org-agenda-skip-entry-if
+                              'todo '("NEXT" "REMIND" "WEEKLY")))))
+               (todo "NEXT" ((org-agenda-overriding-header
+                              "Currently outstanding actions:")))))))
+    #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
   (setq org-archive-location "~/Sync/archive.org.gz::"
