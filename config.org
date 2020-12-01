@@ -637,15 +637,31 @@
                         "  Captured: %U"))))
     #+END_SRC
 *** Custom agenda commands
+    We define the following agenda views:
+    - Immediate view :: Today's calendar and a list next actions.
+      Entries with one of several TODO keywords are hidden in the
+      calendar for the following reason:
+      - =REMIND= and =WEEKLY= :: Incubator entries are only for daily
+        and weekly reviews.
+      - =NEXT= :: They appear anyway in the list below, so we avoid
+        duplication.
+      - =DONE= :: Not very important for immediate action.
+    - Daily review :: Reminders from the "tickler", current "waiting
+      for" entries, and any stuck projects.
+
     #+BEGIN_SRC emacs-lisp
-      (set 'org-agenda-custom-commands
-           '(("i" "Immediate view"
-              ((agenda "" ((org-agenda-span 'day)
-                           (org-agenda-skip-function
-                            '(org-agenda-skip-entry-if
-                              'todo '("NEXT" "REMIND" "WEEKLY")))))
-               (todo "NEXT" ((org-agenda-overriding-header
-                              "Currently outstanding actions:")))))))
+      (setq org-agenda-custom-commands
+            '(("i" "Immediate view"
+               ((agenda "" ((org-agenda-span 'day)
+                            (org-agenda-skip-function
+                             '(org-agenda-skip-entry-if
+                               'todo '("NEXT" "DONE" "REMIND" "WEEKLY")))))
+                (todo "NEXT" ((org-agenda-overriding-header
+                               "Currently outstanding actions:")))))
+              ("d" "Daily review"
+               ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")))
+                (todo "WAIT" ((org-agenda-overriding-header "Waiting for:")))
+                (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
     #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
