@@ -583,7 +583,8 @@
       (use-package org
         :straight org-plus-contrib
         :bind (("C-c a" . org-agenda)
-               ("C-c c" . org-capture))
+               ("C-c c" . org-capture)
+               ("C-c l" . org-store-link))
         :custom
         (org-modules '(ol-notmuch))
         :config
