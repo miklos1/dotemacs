@@ -127,6 +127,8 @@
         confirm-nonexistent-file-or-buffer t
         ediff-window-setup-function 'ediff-setup-windows-plain)
 
+  (global-set-key (kbd "s-b") #'bury-buffer)
+
   ;; Make request.el use `var' directory
   (set 'request-storage-directory (concat user-var-directory "request"))
 
