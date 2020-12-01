@@ -629,6 +629,13 @@
     #+BEGIN_SRC emacs-lisp
       (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
     #+END_SRC
+*** Capture templates
+    #+BEGIN_SRC emacs-lisp
+      (setq org-capture-templates
+            `(("t" "Task" entry (file "ongoing.org")
+               ,(concat "* TODO %?\n"
+                        "  Captured: %U"))))
+    #+END_SRC
 *** Custom agenda commands
     #+BEGIN_SRC emacs-lisp
       (set 'org-agenda-custom-commands
