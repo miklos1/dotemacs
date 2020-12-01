@@ -572,7 +572,7 @@
   (add-hook 'lisp-mode-hook #'indent-with-spaces)
 #+END_SRC
 ** Org mode
-*** Use package and customise modules
+*** =use-package= and customize modules
     We need =ol-notmuch= to be able to link e-mails, which is part of
     =org-contrib=, i.e., part of the official =org-mode= repository,
     but not part of Emacs.  So we use =org-plus-contrib= which
@@ -590,7 +590,7 @@
         :config
         (add-hook 'org-mode-hook #'turn-on-auto-fill))
     #+END_SRC
-*** Define TODO keywords and dependencies
+*** Set TODO keywords and dependencies
     By default, =org-mode= recognises the =TODO= and =DONE= keywords
     only.  We extend this with two new types of actionable items:
     * =NEXT= marks *next actions* according to GTD terminology.  They
