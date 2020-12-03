@@ -636,6 +636,19 @@
                ,(concat "* TODO %?\n"
                         "  Captured: %U"))))
     #+END_SRC
+
+    =org-capture= saves the target file after committing the captured
+    item (unless the template is configured /never/ to save the file).
+    If there are already unsaved changes in the target buffer, they
+    would be saved silently.  To offer the user a choice, we advise
+    ~org-capture-target-buffer~:
+    #+BEGIN_SRC emacs-lisp
+      (define-advice org-capture-target-buffer (:filter-return (target-buffer))
+        ;; Offer to save buffer if there are unsaved changes
+        (save-some-buffers nil #'(lambda () (eq target-buffer (current-buffer))))
+        ;; Just return target buffer!
+        target-buffer)
+    #+END_SRC
 *** Custom agenda commands
     We define the following agenda views:
     - Immediate view :: Today's calendar and a list next actions.
