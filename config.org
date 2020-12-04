@@ -634,7 +634,10 @@
       (setq org-capture-templates
             `(("t" "Task" entry (file "ongoing.org")
                ,(concat "* TODO %?\n"
-                        "  Captured: %U"))))
+                        "  Captured: %U"))
+              ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
+               ,(concat "* %?\n"
+                        "  %^{Calendar capture.}t"))))
     #+END_SRC
 
     =org-capture= saves the target file after committing the captured
