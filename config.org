@@ -480,6 +480,7 @@
           notmuch-search-oldest-first nil))
 
   (use-package counsel-notmuch
+    :after notmuch
     :bind (:map notmuch-hello-mode-map
            ("s" . counsel-notmuch)))
 #+END_SRC
