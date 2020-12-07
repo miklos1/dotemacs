@@ -599,13 +599,13 @@
     * =NEXT= marks *next actions* according to GTD terminology.  They
       denote actions where it is immediately obvious what to do and
       how; there is no need to further break them down.
-    * =WAIT= marks actions to be done by someone else, that we are
+    * =WAITING= marks actions to be done by someone else, that we are
       merely *waiting for*.
     Thus =TODO= remains for what GTD calls *projects*: tasks to be
     accomplished that usually need a closer analysis.
     #+BEGIN_SRC emacs-lisp
       (set 'org-todo-keywords nil)
-      (push '(type "TODO" "NEXT" "WAIT" "|" "DONE") org-todo-keywords)
+      (push '(type "TODO" "NEXT" "WAITING" "|" "DONE") org-todo-keywords)
     #+END_SRC
 
     To be able to dim or hide blocked actions, we must enforce TODO
@@ -677,7 +677,7 @@
                                "Currently outstanding actions:")))))
               ("d" "Daily review"
                ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")))
-                (todo "WAIT" ((org-agenda-overriding-header "Waiting for:")))
+                (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
                 (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
     #+END_SRC
 *** Remainder
