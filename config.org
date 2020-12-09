@@ -600,7 +600,8 @@
       denote actions where it is immediately obvious what to do and
       how; there is no need to further break them down.
     * =WAITING= marks actions to be done by someone else, that we are
-      merely *waiting for*.
+      merely *waiting for*.  Alternatively, with a timestamp or
+      scheduling it can mark appointments at specific times.
     Thus =TODO= remains for what GTD calls *projects*: tasks to be
     accomplished that usually need a closer analysis.
     #+BEGIN_SRC emacs-lisp
@@ -653,6 +654,12 @@
         ;; Just return target buffer!
         target-buffer)
     #+END_SRC
+*** Agenda settings
+    #+BEGIN_SRC emacs-lisp
+      (setq org-agenda-skip-scheduled-if-done t
+            org-agenda-start-on-weekday 0
+            org-agenda-window-setup 'other-window)
+    #+END_SRC
 *** Custom agenda commands
     We define the following agenda views:
     - Immediate view :: Today's calendar and a list next actions.
@@ -662,7 +669,6 @@
         and weekly reviews.
       - =NEXT= :: They appear anyway in the list below, so we avoid
         duplication.
-      - =DONE= :: Not very important for immediate action.
     - Daily review :: Reminders from the "tickler", current "waiting
       for" entries, and any stuck projects.
 
@@ -672,7 +678,7 @@
                ((agenda "" ((org-agenda-span 'day)
                             (org-agenda-skip-function
                              '(org-agenda-skip-entry-if
-                               'todo '("NEXT" "DONE" "REMIND" "WEEKLY")))))
+                               'todo '("NEXT" "REMIND" "WEEKLY")))))
                 (todo "NEXT" ((org-agenda-overriding-header
                                "Currently outstanding actions:")))))
               ("d" "Daily review"
@@ -682,8 +688,7 @@
     #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
-  (setq org-archive-location "~/Sync/archive.org.gz::"
-        org-agenda-start-on-weekday nil)
+  (setq org-archive-location "~/Sync/archive.org.gz::")
 
   (add-hook
    'org-mode-hook
