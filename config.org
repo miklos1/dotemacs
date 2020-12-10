@@ -1,4 +1,5 @@
 #+PROPERTY: header-args :tangle yes
+#+STARTUP: indent
 
 * Preamble
 #+BEGIN_SRC emacs-lisp
@@ -576,130 +577,130 @@
 #+END_SRC
 ** Org mode
 *** =use-package= and customize modules
-    We need =ol-notmuch= to be able to link e-mails, which is part of
-    =org-contrib=, i.e., part of the official =org-mode= repository,
-    but not part of Emacs.  So we use =org-plus-contrib= which
-    contains both the core package and the official contributor
-    packages, and enable the =ol-notmuch= module.
+We need =ol-notmuch= to be able to link e-mails, which is part of
+=org-contrib=, i.e., part of the official =org-mode= repository, but
+not part of Emacs.  So we use =org-plus-contrib= which contains both
+the core package and the official contributor packages, and enable the
+=ol-notmuch= module.
 
-    #+BEGIN_SRC emacs-lisp
-      (use-package org
-        :straight org-plus-contrib
-        :bind (("C-c a" . org-agenda)
-               ("C-c c" . org-capture)
-               ("C-c l" . org-store-link))
-        :custom
-        (org-modules '(ol-docview ol-info ol-notmuch))
-        :config
-        (add-hook 'org-mode-hook #'turn-on-auto-fill))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package org
+    :straight org-plus-contrib
+    :bind (("C-c a" . org-agenda)
+           ("C-c c" . org-capture)
+           ("C-c l" . org-store-link))
+    :custom
+    (org-modules '(ol-docview ol-info ol-notmuch))
+    :config
+    (add-hook 'org-mode-hook #'turn-on-auto-fill))
+#+END_SRC
 *** Set TODO keywords and dependencies
-    By default, =org-mode= recognises the =TODO= and =DONE= keywords
-    only.  We extend this with two new types of actionable items:
-    * =NEXT= marks *next actions* according to GTD terminology.  They
-      denote actions where it is immediately obvious what to do and
-      how; there is no need to further break them down.
-    * =WAITING= marks actions to be done by someone else, that we are
-      merely *waiting for*.  Alternatively, with a timestamp or
-      scheduling it can mark appointments at specific times.
-    Thus =TODO= remains for what GTD calls *projects*: tasks to be
-    accomplished that usually need a closer analysis.
-    #+BEGIN_SRC emacs-lisp
-      (set 'org-todo-keywords nil)
-      (push '(type "TODO" "NEXT" "WAITING" "|" "DONE") org-todo-keywords)
-    #+END_SRC
+By default, =org-mode= recognises the =TODO= and =DONE= keywords only.
+We extend this with two new types of actionable items:
++ =NEXT= marks *next actions* according to GTD terminology.  They
+  denote actions where it is immediately obvious what to do and how;
+  there is no need to further break them down.
++ =WAITING= marks actions to be done by someone else, that we are
+  merely *waiting for*.  Alternatively, with a timestamp or scheduling
+  it can mark appointments at specific times.
+Thus =TODO= remains for what GTD calls *projects*: tasks to be
+accomplished that usually need a closer analysis.
+#+BEGIN_SRC emacs-lisp
+  (set 'org-todo-keywords nil)
+  (push '(type "TODO" "NEXT" "WAITING" "|" "DONE") org-todo-keywords)
+#+END_SRC
 
-    To be able to dim or hide blocked actions, we must enforce TODO
-    dependencies:
-    #+BEGIN_SRC emacs-lisp
-      (setq org-enforce-todo-dependencies t)
-    #+END_SRC
+To be able to dim or hide blocked actions, we must enforce TODO
+dependencies:
+#+BEGIN_SRC emacs-lisp
+  (setq org-enforce-todo-dependencies t)
+#+END_SRC
 
-    We are going to use scheduling to stop thinking about certain
-    tasks until a more opportune time.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-todo-ignore-scheduled 'future
-            org-agenda-todo-ignore-time-comparison-use-seconds t)
-    #+END_SRC
+We are going to use scheduling to stop thinking about certain tasks
+until a more opportune time.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-todo-ignore-scheduled 'future
+        org-agenda-todo-ignore-time-comparison-use-seconds t)
+#+END_SRC
 
-    For the *incubator* and the *tickler*, we add some more keywords:
-    * =REMIND= marks headings that come up at the /daily/ review.  It
-      is meant to be scheduled, so the reminder comes up first on the
-      specified day.
-    * =WEEKLY= marks headings that come up at the /weekly/ review.  It
-      may also be scheduled for further delay.
-    #+BEGIN_SRC emacs-lisp
-      (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
-    #+END_SRC
+For the *incubator* and the *tickler*, we add some more keywords:
++ =REMIND= marks headings that come up at the /daily/ review.  It is
+  meant to be scheduled, so the reminder comes up first on the
+  specified day.
++ =WEEKLY= marks headings that come up at the /weekly/ review.  It may
+  also be scheduled for further delay.
+#+BEGIN_SRC emacs-lisp
+  (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
+#+END_SRC
 *** Capture templates
-    Setting the default notes file is actually superfluous if
-    ~org-capture-templates~ is properly configured.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-default-notes-file "notes.org")
-    #+END_SRC
+Setting the default notes file is actually superfluous if
+~org-capture-templates~ is properly configured.
+#+BEGIN_SRC emacs-lisp
+  (setq org-default-notes-file "notes.org")
+#+END_SRC
 
-    Not being familiar with Emacs bookmarks, we disable =org-capture=
-    from messing with them.
-    #+BEGIN_SRC emacs-lisp
-      (setq org-capture-bookmark nil)
-    #+END_SRC
+Not being familiar with Emacs bookmarks, we disable =org-capture= from
+messing with them.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-bookmark nil)
+#+END_SRC
 
-    #+BEGIN_SRC emacs-lisp
-      (setq org-capture-templates
-            `(("t" "Task" entry (file "ongoing.org")
-               ,(concat "* TODO %?\n"
-                        "  Captured: %U"))
-              ("n" "Note" item (file+olp "notes.org" "Inbox")
-               "- %i%? (%a)")
-              ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
-               ,(concat "* %?\n"
-                        "  %^{Calendar capture.}t"))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        `(("t" "Task" entry (file "ongoing.org")
+           ,(concat "* TODO %?\n"
+                    "  Captured: %U"))
+          ("n" "Note" item (file+olp "notes.org" "Inbox")
+           "- %i%? (%a)")
+          ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
+           ,(concat "* %?\n"
+                    "  %^{Calendar capture.}t"))))
+#+END_SRC
 
-    =org-capture= saves the target file after committing the captured
-    item (unless the template is configured /never/ to save the file).
-    If there are already unsaved changes in the target buffer, they
-    would be saved silently.  To offer the user a choice, we advise
-    ~org-capture-target-buffer~:
-    #+BEGIN_SRC emacs-lisp
-      (define-advice org-capture-target-buffer (:filter-return (target-buffer))
-        ;; Offer to save buffer if there are unsaved changes
-        (save-some-buffers nil #'(lambda () (eq target-buffer (current-buffer))))
-        ;; Just return target buffer!
-        target-buffer)
-    #+END_SRC
+=org-capture= saves the target file after committing the captured item
+(unless the template is set up /never/ to save the file).  If there
+are already unsaved changes in the target buffer, they would be saved
+silently.  To offer the user a choice, we advise
+~org-capture-target-buffer~:
+#+BEGIN_SRC emacs-lisp
+  (define-advice org-capture-target-buffer (:filter-return (target-buffer))
+    ;; Offer to save buffer if there are unsaved changes
+    (save-some-buffers nil #'(lambda () (eq target-buffer (current-buffer))))
+    ;; Just return target buffer!
+    target-buffer)
+#+END_SRC
 *** Agenda settings
-    #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-skip-scheduled-if-done t
-            org-agenda-start-on-weekday 0
-            org-agenda-window-setup 'other-window)
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-skip-scheduled-if-done t
+        org-agenda-start-on-weekday 0
+        org-agenda-window-setup 'other-window)
+#+END_SRC
 *** Custom agenda commands
-    We define the following agenda views:
-    - Immediate view :: Today's calendar and a list next actions.
-      Entries with one of several TODO keywords are hidden in the
-      calendar for the following reason:
-      - =REMIND= and =WEEKLY= :: Incubator entries are only for daily
-        and weekly reviews.
-      - =NEXT= :: They appear anyway in the list below, so we avoid
-        duplication.
-    - Daily review :: Reminders from the "tickler", current "waiting
-      for" entries, and any stuck projects.
+We define the following agenda views:
+- Immediate view :: Today's calendar and a list next actions.  Entries
+  with one of several TODO keywords are hidden in the calendar for the
+  following reason:
+  - =REMIND= and =WEEKLY= :: Incubator entries are only for daily and
+    weekly reviews.
+  - =NEXT= :: They appear anyway in the list below, so we avoid
+    duplication.
+- Daily review :: Reminders from the "tickler", current "waiting for"
+  entries, and any stuck projects.
 
-    #+BEGIN_SRC emacs-lisp
-      (setq org-agenda-custom-commands
-            '(("i" "Immediate view"
-               ((agenda "" ((org-agenda-span 'day)
-                            (org-agenda-skip-function
-                             '(org-agenda-skip-entry-if
-                               'todo '("NEXT" "REMIND" "WEEKLY")))))
-                (todo "NEXT" ((org-agenda-overriding-header
-                               "Currently outstanding actions:")))))
-              ("d" "Daily review"
-               ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")))
-                (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
-                (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
-    #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+        '(("i" "Immediate view"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-agenda-skip-function
+                         '(org-agenda-skip-entry-if
+                           'todo '("NEXT" "REMIND" "WEEKLY")))))
+            (todo "NEXT" ((org-agenda-overriding-header
+                           "Currently outstanding actions:")))))
+          ("d" "Daily review"
+           ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")))
+            (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
+            (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
+#+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
   (setq org-archive-location "~/Sync/archive.org.gz::")
@@ -784,45 +785,45 @@
 #+END_SRC
 *** COMMENT Alternative Python configurations
 **** elpy configuration
- #+BEGIN_SRC elisp
- ;; Python
- (elpy-enable)
- (setq elpy-rpc-python-command "/usr/local/bin/python3")
- (setq elpy-test-runner 'elpy-test-pytest-runner
-       elpy-modules (remove 'elpy-module-highlight-indentation elpy-modules))
- #+END_SRC
+#+BEGIN_SRC elisp
+;; Python
+(elpy-enable)
+(setq elpy-rpc-python-command "/usr/local/bin/python3")
+(setq elpy-test-runner 'elpy-test-pytest-runner
+      elpy-modules (remove 'elpy-module-highlight-indentation elpy-modules))
+#+END_SRC
 **** anaconda-mode
- #+BEGIN_SRC elisp
- (straight-use-package 'anaconda-mode)
- (straight-use-package 'pyenv-mode)
- (straight-use-package 'company-anaconda)
+#+BEGIN_SRC elisp
+(straight-use-package 'anaconda-mode)
+(straight-use-package 'pyenv-mode)
+(straight-use-package 'company-anaconda)
 
- (add-hook 'python-mode-hook 'anaconda-mode)
- (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
- #+END_SRC
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+#+END_SRC
 **** eglot
- #+BEGIN_SRC elisp
- (require 'project)
- (use-package eglot
-   :hook (python-mode . eglot-ensure))
- #+END_SRC
+#+BEGIN_SRC elisp
+(require 'project)
+(use-package eglot
+  :hook (python-mode . eglot-ensure))
+#+END_SRC
 **** nox
- #+BEGIN_SRC elisp
- (straight-use-package '(nox :type git :host github :repo "manateelazycat/nox"))
- (add-hook 'python-mode-hook #'nox-ensure)
- #+END_SRC
+#+BEGIN_SRC elisp
+(straight-use-package '(nox :type git :host github :repo "manateelazycat/nox"))
+(add-hook 'python-mode-hook #'nox-ensure)
+#+END_SRC
 **** Microsoft language servers
- #+BEGIN_SRC elisp
- (use-package lsp-python-ms)
- (use-package lsp-pyright
-   :straight (:type git :host github :repo "emacs-lsp/lsp-pyright"))
- #+END_SRC
+#+BEGIN_SRC elisp
+(use-package lsp-python-ms)
+(use-package lsp-pyright
+  :straight (:type git :host github :repo "emacs-lsp/lsp-pyright"))
+#+END_SRC
 **** Cython & pytest
- #+BEGIN_SRC elisp
- (straight-use-package 'cython-mode)
- (straight-use-package 'flycheck-cython)
- (straight-use-package 'python-pytest)  ;; requires projectile
- #+END_SRC
+#+BEGIN_SRC elisp
+(straight-use-package 'cython-mode)
+(straight-use-package 'flycheck-cython)
+(straight-use-package 'python-pytest)  ;; requires projectile
+#+END_SRC
 ** JavaScript
 #+BEGIN_SRC emacs-lisp
   (use-package js
