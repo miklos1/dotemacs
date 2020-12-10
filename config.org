@@ -453,10 +453,10 @@
     :commands magit-after-save-refresh-status
     :bind
     ("C-x g" . magit-status)
+    :custom
+    (magit-delete-by-moving-to-trash nil)
+    (magit-diff-refine-hunk t)
     :config
-    (setq magit-delete-by-moving-to-trash nil
-          magit-diff-refine-hunk t)
-    (global-magit-file-mode t)
     (add-hook 'after-save-hook #'magit-after-save-refresh-status))
 #+END_SRC
 ** Mail
