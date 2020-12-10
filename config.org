@@ -443,7 +443,7 @@
      (expand-file-name "eshell_history" user-var-directory))
     (eshell-last-dir-ring-file-name nil))
 #+END_SRC
-** Terminal emulation
+** COMMENT Terminal emulation
 #+BEGIN_SRC emacs-lisp
   (use-package vterm)
 #+END_SRC
