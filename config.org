@@ -879,10 +879,18 @@ We define the following agenda views:
 #+END_SRC
 * Tangle configuration automatically after each save
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'safe-local-eval-forms
-               '(add-hook 'after-save-hook #'org-babel-tangle nil 'local))
+  (eval-when-compile
+    (require 'ob-tangle))
+
+  (defun tangle-config.org ()
+    "If the current buffer is `config.org', tangle it!"
+    (when (equal (file-truename (buffer-file-name))
+                 (expand-file-name "config.org" user-emacs-directory))
+      (org-babel-tangle)))
+
+  (add-hook 'after-save-hook #'tangle-config.org)
+  (add-hook 'after-revert-hook #'tangle-config.org)
 #+END_SRC
 
-# Local variables:
-# eval: (add-hook 'after-save-hook #'org-babel-tangle nil 'local)
-# End:
+This approach is better than file-local hooks, because it also works
+with ~"C-x s"~ as well as ~revert-buffer~.
