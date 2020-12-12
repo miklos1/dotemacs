@@ -437,10 +437,10 @@
     :straight nil
     :bind ("s-t" . eshell)
     :custom
+    (eshell-directory-name
+     (expand-file-name "eshell" user-var-directory))
     (eshell-aliases-file
      (expand-file-name "eshell_aliases" user-emacs-directory))
-    (eshell-history-file-name
-     (expand-file-name "eshell_history" user-var-directory))
     (eshell-last-dir-ring-file-name nil))
 #+END_SRC
 ** COMMENT Terminal emulation
