@@ -647,14 +647,12 @@ messing with them.
 
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
-        `(("t" "Task" entry (file "ongoing.org")
-           ,(concat "* TODO %?\n"
-                    "  Captured: %U"))
+        '(("t" "Task" entry (file "ongoing.org")
+           "* TODO %?")
           ("n" "Note" item (file+olp "notes.org" "Inbox")
            "- %i%? (%a)")
           ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
-           ,(concat "* %?\n"
-                    "  %^{Calendar capture.}t"))))
+           "* %?\n  %^{Calendar capture.}t")))
 #+END_SRC
 
 =org-capture= saves the target file after committing the captured item
