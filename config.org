@@ -649,6 +649,8 @@ messing with them.
   (setq org-capture-templates
         '(("t" "Task" entry (file "ongoing.org")
            "* TODO %?")
+          ("r" "Reminder" entry (file "incubator.org")
+           "* REMIND %?")
           ("n" "Note" item (file+olp "notes.org" "Inbox")
            "- %i%? (%a)")
           ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
