@@ -623,6 +623,10 @@ until a more opportune time.
         org-agenda-todo-ignore-time-comparison-use-seconds t)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (setq org-log-done 'time)
+#+END_SRC
+
 For the *incubator* and the *tickler*, we add some more keywords:
 + =REMIND= marks headings that come up at the /daily/ review.  It is
   meant to be scheduled, so the reminder comes up first on the
