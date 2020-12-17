@@ -698,8 +698,10 @@ We define the following agenda views:
                         (org-agenda-skip-function
                          '(org-agenda-skip-entry-if
                            'todo '("NEXT" "REMIND" "WEEKLY")))))
-            (todo "NEXT" ((org-agenda-overriding-header
-                           "Currently outstanding actions:")))))
+            (todo "NEXT" ((org-agenda-overriding-header "Outstanding actions:")))
+            (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
+            (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")
+                          (org-agenda-dim-blocked-tasks 'invisible)))))
           ("d" "Daily review"
            ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")))
             (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
