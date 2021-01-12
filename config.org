@@ -636,11 +636,31 @@ For the *incubator* and the *tickler*, we add some more keywords:
 #+BEGIN_SRC emacs-lisp
   (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
 #+END_SRC
+*** Agenda settings
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-skip-scheduled-if-done t
+        org-agenda-start-on-weekday 0
+        org-agenda-window-setup 'other-window)
+#+END_SRC
+*** Agenda files
+#+BEGIN_SRC emacs-lisp
+  (defun org-file (filename)
+    "Interpret relative file names relative to `org-directory'."
+    (if (file-name-absolute-p filename)
+        filename
+      (concat (file-name-as-directory org-directory) filename)))
+
+  (setq org-agenda-files
+        (mapcar #'org-file '("calendar/"
+                             "incubator.org"
+                             "ongoing.org"
+                             "recurring.org")))
+#+END_SRC
 *** Capture templates
 Setting the default notes file is actually superfluous if
 ~org-capture-templates~ is properly configured.
 #+BEGIN_SRC emacs-lisp
-  (setq org-default-notes-file "notes.org")
+  (setq org-default-notes-file (org-file "notes.org"))
 #+END_SRC
 
 Not being familiar with Emacs bookmarks, we disable =org-capture= from
@@ -673,12 +693,6 @@ silently.  To offer the user a choice, we advise
     ;; Just return target buffer!
     target-buffer)
 #+END_SRC
-*** Agenda settings
-#+BEGIN_SRC emacs-lisp
-  (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-start-on-weekday 0
-        org-agenda-window-setup 'other-window)
-#+END_SRC
 *** Custom agenda commands
 We define the following agenda views:
 - Immediate view :: Today's calendar and a list next actions.  Entries
@@ -710,8 +724,7 @@ We define the following agenda views:
 #+END_SRC
 *** Archiving
 #+BEGIN_SRC emacs-lisp
-  (setq org-archive-location
-        (concat (file-name-as-directory org-directory) "archive.org::* From %s"))
+  (setq org-archive-location (org-file "archive.org::* From %s"))
 #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
