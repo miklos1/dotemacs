@@ -708,10 +708,13 @@ We define the following agenda views:
             (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
             (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
 #+END_SRC
+*** Archiving
+#+BEGIN_SRC emacs-lisp
+  (setq org-archive-location
+        (concat (file-name-as-directory org-directory) "archive.org::* From %s"))
+#+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
-  (setq org-archive-location "~/Sync/archive.org.gz::")
-
   (add-hook
    'org-mode-hook
    (lambda ()
