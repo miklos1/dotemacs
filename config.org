@@ -475,6 +475,8 @@
     (define-advice compose-mail (:before (&rest ignored) "notmuch")
       ignored
       (require 'notmuch))
+
+    (setq read-mail-command 'notmuch)
     :config
     (setq notmuch-draft-folder (format "%s/Drafts" user-mail-address)
           notmuch-fcc-dirs `((".*" . ,(format "%s/Sent" user-mail-address)))
