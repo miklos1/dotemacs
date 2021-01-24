@@ -713,7 +713,7 @@ We define the following agenda views:
            ((agenda "" ((org-agenda-span 'day)
                         (org-agenda-skip-function
                          '(org-agenda-skip-entry-if
-                           'todo '("NEXT" "REMIND" "WEEKLY")))))
+                           'todo '("NEXT" "WEEKLY")))))
             (todo "NEXT" ((org-agenda-overriding-header "Outstanding actions:")))
             (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
             (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")
