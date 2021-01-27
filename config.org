@@ -748,7 +748,6 @@ We define the following agenda views:
   ;; (setq org-support-shift-select 'always)
 
   ;; (setq org-agenda-default-appointment-duration 30)
-  ;; (setq org-agenda-dim-blocked-tasks 'invisible)
   (setq org-agenda-show-all-dates nil)
 
   ;; (setq org-refile-targets '((org-agenda-files . (:level . 1))))
