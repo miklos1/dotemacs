@@ -220,19 +220,19 @@
 #+BEGIN_SRC emacs-lisp
   (icomplete-mode t)
 #+END_SRC
-*** Ivy, Counsel, & Ivy-rich
+*** Marginalia mode
+#+BEGIN_SRC emacs-lisp
+  (use-package marginalia
+    :init
+    (marginalia-mode))
+#+END_SRC
+*** Counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
     :defer t)
 
   (use-package counsel
-    :bind (("M-x" . counsel-M-x)
-           ([remap describe-function] . counsel-describe-function)
-           ([remap describe-variable] . counsel-describe-variable)))
-
-  (use-package ivy-rich
-    :after counsel
-    :config (ivy-rich-mode t))
+    :defer)
 #+END_SRC
 *** Which-key
 #+BEGIN_SRC emacs-lisp
