@@ -226,14 +226,6 @@
     :init
     (marginalia-mode))
 #+END_SRC
-*** Counsel
-#+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :defer t)
-
-  (use-package counsel
-    :defer)
-#+END_SRC
 *** Which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -246,17 +238,21 @@
 #+END_SRC
 ** Finding files by name and by content
 #+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :defer t)
+
+  (use-package counsel
+    :bind (("C-c f r" . counsel-buffer-or-recentf)
+           ("C-c f g" . counsel-git)
+           ("C-c s g" . counsel-git-grep)
+           ("C-c s d" . counsel-rg)))
+
   (defun interactive-rgrep ()
     "Recursively and interactively search directory."
     (interactive)
     (let ((initial-directory
            (read-directory-name "Base directory: " nil nil t)))
       (counsel-rg nil initial-directory)))
-
-  (bind-keys ("C-c f r" . counsel-buffer-or-recentf)
-             ("C-c f g" . counsel-git)
-             ("C-c s g" . counsel-git-grep)
-             ("C-c s d" . counsel-rg))
 #+END_SRC
 *** TODO Expand and configure this further!
 * Generic buffer editing, editing visuals, and buffer navigation
