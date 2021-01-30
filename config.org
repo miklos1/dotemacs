@@ -723,7 +723,7 @@ We define the following agenda views:
 #+END_SRC
 *** Archiving
 #+BEGIN_SRC emacs-lisp
-  (setq org-archive-location (org-file "archive.org::* From %s"))
+  (setq org-archive-location (org-file "archive/default.org::* From %s"))
 #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
