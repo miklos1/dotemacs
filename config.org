@@ -652,7 +652,8 @@ For the *incubator* and the *tickler*, we add some more keywords:
         (mapcar #'org-file '("calendar/"
                              "incubator.org"
                              "ongoing.org"
-                             "recurring.org")))
+                             "recurring.org"
+                             "upcoming.org")))
 #+END_SRC
 *** Capture templates
 Setting the default notes file is actually superfluous if
@@ -675,7 +676,7 @@ messing with them.
            "* REMIND %?")
           ("n" "Note" item (file+olp "notes.org" "Inbox")
            "- %i%? (%a)")
-          ("c" "Calendar entry" entry (file+olp "calendar/upcoming.org" "Miscellaneous")
+          ("c" "Calendar entry" entry (file+olp "upcoming.org" "Miscellaneous")
            "* %?\n  %^{Calendar capture.}t")))
 #+END_SRC
 
