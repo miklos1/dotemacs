@@ -223,6 +223,7 @@
 *** Marginalia mode
 #+BEGIN_SRC emacs-lisp
   (use-package marginalia
+    :straight (:branch "main")
     :init
     (marginalia-mode))
 #+END_SRC
