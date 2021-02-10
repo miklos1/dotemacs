@@ -605,7 +605,9 @@ Thus =TODO= remains for what GTD calls *projects*: tasks to be
 accomplished that usually need a closer analysis.
 #+BEGIN_SRC emacs-lisp
   (set 'org-todo-keywords nil)
-  (push '(type "TODO" "NEXT" "WAITING" "|" "DONE") org-todo-keywords)
+  (add-to-list 'org-todo-keywords
+               '(type "TODO" "NEXT" "WAITING" "|" "DONE")
+               'append)
 #+END_SRC
 
 To be able to dim or hide blocked actions, we must enforce TODO
@@ -632,7 +634,9 @@ For the *incubator* and the *tickler*, we add some more keywords:
 + =WEEKLY= marks headings that come up at the /weekly/ review.  It may
   also be scheduled for further delay.
 #+BEGIN_SRC emacs-lisp
-  (push '(sequence "REMIND" "WEEKLY" "|") org-todo-keywords)
+  (add-to-list 'org-todo-keywords
+               '(sequence "REMIND" "WEEKLY" "|")
+               'append)
 #+END_SRC
 *** Agenda settings
 #+BEGIN_SRC emacs-lisp
