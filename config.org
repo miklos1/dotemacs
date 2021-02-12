@@ -660,6 +660,13 @@ For the *incubator* and the *tickler*, we add some more keywords:
                              "upcoming.org"
                              "warrington.org")))
 #+END_SRC
+*** Archiving
+#+BEGIN_SRC emacs-lisp
+  (setq org-archive-location
+        (org-file "archive/default.org::* From %s")
+        org-attach-id-dir
+        (org-file "data/"))
+#+END_SRC
 *** Capture templates
 Setting the default notes file is actually superfluous if
 ~org-capture-templates~ is properly configured.
@@ -725,10 +732,6 @@ We define the following agenda views:
                             (org-agenda-dim-blocked-tasks 'invisible)))
             (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
             (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
-#+END_SRC
-*** Archiving
-#+BEGIN_SRC emacs-lisp
-  (setq org-archive-location (org-file "archive/default.org::* From %s"))
 #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
