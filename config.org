@@ -644,36 +644,33 @@ For the *incubator* and the *tickler*, we add some more keywords:
         org-agenda-start-on-weekday nil
         org-agenda-window-setup 'other-window)
 #+END_SRC
-*** Agenda files
+*** Org files
 #+BEGIN_SRC emacs-lisp
   (defun org-file (filename)
     "Interpret relative file names relative to `org-directory'."
     (if (file-name-absolute-p filename)
         filename
       (concat (file-name-as-directory org-directory) filename)))
+#+END_SRC
 
-  (setq org-agenda-files
+#+BEGIN_SRC emacs-lisp
+  (setq org-default-notes-file
+        (org-file "notes.org")
+        org-agenda-files
         (mapcar #'org-file '("calendar/"
                              "incubator.org"
                              "ongoing.org"
                              "recurring.org"
                              "upcoming.org"
-                             "warrington.org")))
-#+END_SRC
-*** Archiving
-#+BEGIN_SRC emacs-lisp
-  (setq org-archive-location
+                             "warrington.org"))
+        org-archive-location
         (org-file "archive/default.org::* From %s")
         org-attach-id-dir
         (org-file "data/"))
 #+END_SRC
-*** Capture templates
-Setting the default notes file is actually superfluous if
+Note: setting the default notes file is actually superfluous if
 ~org-capture-templates~ is properly configured.
-#+BEGIN_SRC emacs-lisp
-  (setq org-default-notes-file (org-file "notes.org"))
-#+END_SRC
-
+*** Capture templates
 Not being familiar with Emacs bookmarks, we disable =org-capture= from
 messing with them.
 #+BEGIN_SRC emacs-lisp
