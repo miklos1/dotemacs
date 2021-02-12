@@ -657,7 +657,8 @@ For the *incubator* and the *tickler*, we add some more keywords:
                              "incubator.org"
                              "ongoing.org"
                              "recurring.org"
-                             "upcoming.org")))
+                             "upcoming.org"
+                             "warrington.org")))
 #+END_SRC
 *** Capture templates
 Setting the default notes file is actually superfluous if
