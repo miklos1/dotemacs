@@ -30,7 +30,7 @@
   (setq straight-vc-git-default-clone-depth 1)
 #+END_SRC
 *** Modified code snippet to bootstrap
-    Using =user-local-directory= instead of =user-emacs-directory=.
+Using =user-local-directory= instead of =user-emacs-directory=.
 
 #+BEGIN_SRC emacs-lisp
   (defvar bootstrap-version)
@@ -106,9 +106,9 @@
     "Whether GNU `ls' is available on the system.")
 #+END_SRC
 ** =default-directory=
-   On macOS, when launching Emacs from the Launcher, the filesystem
-   root becomes the current working directory.  We correct this to the
-   home directory.
+On macOS, when launching Emacs from Launcher, the filesystem root
+becomes the current working directory.  We correct this to the home
+directory.
 
 #+BEGIN_SRC emacs-lisp
   (when (and (eq window-system 'ns)
@@ -180,8 +180,8 @@
              calendar-location-name "current location"))))
 #+END_SRC
 ** TODO Auto-save and interlocking
-   Setting =auto-save-default= and =create-lockfiles= to =nil=
-   disables them.
+Setting =auto-save-default= and =create-lockfiles= to =nil= disables
+them.
 ** Backup settings
 #+BEGIN_SRC emacs-lisp
   (setq backup-by-copying-when-linked t
