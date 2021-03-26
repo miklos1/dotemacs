@@ -556,7 +556,6 @@ them.
     :defer t
     :init
     ;; Use Clozure CL
-    (add-to-list 'exec-path-from-shell-variables "CCL_DEFAULT_DIRECTORY")
     (setq inferior-lisp-program "ccl64")
     ;; Hyperspec location
     (setq common-lisp-hyperspec-root
