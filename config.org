@@ -366,7 +366,7 @@ them.
 ** Avy
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :chords (",." . avy-goto-char)
+    :chords (",." . avy-goto-subword-1)
     :bind (:map isearch-mode-map
           ("<C-return>" . avy-isearch)))
 #+END_SRC
