@@ -25,9 +25,6 @@
   (setq straight-base-dir user-local-directory
         straight-check-for-modifications '(find-when-checking)
         straight-enable-package-integration nil)
-
-  ;; Optimise network utilisation
-  (setq straight-vc-git-default-clone-depth 1)
 #+END_SRC
 *** Modified code snippet to bootstrap
 Using =user-local-directory= instead of =user-emacs-directory=.
@@ -223,7 +220,6 @@ them.
 *** Marginalia mode
 #+BEGIN_SRC emacs-lisp
   (use-package marginalia
-    :straight (:branch "main")
     :init
     (marginalia-mode))
 #+END_SRC
