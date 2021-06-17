@@ -255,9 +255,6 @@ them.
 * Generic buffer editing, editing visuals, and buffer navigation
 ** Miscellaneous settings
 #+BEGIN_SRC emacs-lisp
-  ;; Make typing delete selection as in most modern text editors
-  (delete-selection-mode t)
-
   ;; More often than not, files should end with a final newline
   (setq require-final-newline t)
 
