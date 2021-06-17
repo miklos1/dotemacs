@@ -645,7 +645,11 @@ For the *incubator* and the *tickler*, we add some more keywords:
     "Interpret relative file names relative to `org-directory'."
     (if (file-name-absolute-p filename)
         filename
-      (concat (file-name-as-directory org-directory) filename)))
+      (progn
+        ;; Make sure that `org-directory' is defined
+        (unless (boundp 'org-directory)
+          (require 'org))
+        (concat (file-name-as-directory org-directory) filename))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
