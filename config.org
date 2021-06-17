@@ -572,13 +572,12 @@ them.
 *** =use-package= and customize modules
 We need =ol-notmuch= to be able to link e-mails, which is part of
 =org-contrib=, i.e., part of the official =org-mode= repository, but
-not part of Emacs.  So we use =org-plus-contrib= which contains both
-the core package and the official contributor packages, and enable the
-=ol-notmuch= module.
+not part of Emacs.  So we install =org-contrib= which also pulls in
+the core =org= package, and enable the =ol-notmuch= module.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :straight org-plus-contrib
+    :straight org-contrib
     :bind (("C-c a" . org-agenda)
            ("C-c c" . org-capture)
            ("C-c l" . org-store-link))
