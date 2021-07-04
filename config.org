@@ -285,7 +285,7 @@ them.
   (setq-default indent-tabs-mode nil)
 
   ;; Do not hide tabs when deleting
-  (setq backward-delete-char-untabify-method nil)
+  (setq backward-delete-char-untabify-method 'hungry)
 #+END_SRC
 ** Whitespace highlighting
 #+BEGIN_SRC emacs-lisp
