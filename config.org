@@ -656,8 +656,7 @@ For the *incubator* and the *tickler*, we add some more keywords:
                              "incubator.org"
                              "ongoing.org"
                              "recurring.org"
-                             "upcoming.org"
-                             "warrington.org"))
+                             "upcoming.org"))
         org-archive-location
         (org-file "archive/default.org::* From %s")
         org-attach-id-dir
