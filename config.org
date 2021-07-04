@@ -213,11 +213,36 @@ them.
 #+END_SRC
 *** TODO Consider configuring =recentf-auto-cleanup=
 ** Convenience packages
-*** Icomplete mode
+*** Minibuffer completion
 #+BEGIN_SRC emacs-lisp
-  (icomplete-mode t)
+  (setq completion-styles '(basic partial-completion)
+        completion-category-overrides '((file (styles basic substring))))
+  (setq read-buffer-completion-ignore-case
+        read-file-name-completion-ignore-case)
 #+END_SRC
-*** Marginalia mode
+*** Minibuffer selection
+**** Vertico
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico
+    :config
+    (define-key vertico-map (kbd "C-M-i") #'vertico-insert)
+    (define-key vertico-map (kbd "TAB") #'minibuffer-complete)
+
+    (vertico-mode t))
+#+END_SRC
+**** COMMENT Selectrum
+#+BEGIN_SRC emacs-lisp
+  (use-package selectrum
+    :config
+    (selectrum-mode))
+
+  (use-package selectrum-prescient
+    :custom
+    (selectrum-prescient-enable-filtering nil)
+    :config
+    (selectrum-prescient-mode))
+#+END_SRC
+*** Fancy minibuffer and more features
 #+BEGIN_SRC emacs-lisp
   (use-package marginalia
     :init
