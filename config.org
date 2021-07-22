@@ -487,6 +487,7 @@ them.
   (use-package notmuch
     :bind ("C-c m" . notmuch)
     :custom
+    (mail-user-agent 'notmuch-user-agent)
     (read-mail-command 'notmuch)
     (notmuch-draft-folder (format "%s/Drafts" user-mail-address))
     (notmuch-fcc-dirs `((".*" . ,(format "%s/Sent" user-mail-address))))
