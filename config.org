@@ -413,6 +413,7 @@ them.
 #+BEGIN_SRC emacs-lisp
   (use-package guess-language
     :defer t
+    :commands guess-language
     :hook (flyspell-mode . (lambda ()
                              (guess-language-mode (if flyspell-mode 1 -1))))
     :config
@@ -422,6 +423,15 @@ them.
             (de "de_DE" "German")
             (hu "hu_HU" nil)
             (la "la" nil))))
+
+  ;; Turn on Flyspell mode automatically in text modes when manually
+  ;; asking to spell check a word.  In addition, guess language before
+  ;; checking the word.
+  (define-advice ispell-word (:before (&rest ignored) "flyspell-mode")
+    ignored
+    (when (and (not flyspell-mode) (derived-mode-p 'text-mode))
+      (flyspell-mode)
+      (guess-language)))
 
   (use-package langtool
     :defer t
