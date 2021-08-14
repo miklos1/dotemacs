@@ -584,8 +584,8 @@ them.
   (use-package sly
     :defer t
     :init
-    ;; Use Clozure CL
-    (setq inferior-lisp-program "ccl64")
+    ;; Use SBCL
+    (setq inferior-lisp-program "sbcl")
     ;; Hyperspec location
     (setq common-lisp-hyperspec-root
           "/usr/local/share/doc/hyperspec/HyperSpec/"
