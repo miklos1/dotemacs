@@ -595,7 +595,9 @@ them.
           (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
     :config
     ;; Sly completions
-    (setq sly-complete-symbol-function 'sly-simple-completions))
+    (setq sly-complete-symbol-function 'sly-simple-completions)
+    :custom
+    (org-babel-lisp-eval-fn 'sly-eval))
 
   ;; Indent Common Lisp with spaces
   (add-to-list 'whitespace-global-modes 'lisp-mode)
