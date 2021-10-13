@@ -488,6 +488,7 @@ them.
 #+BEGIN_SRC emacs-lisp
   (setq mail-envelope-from 'header
         mail-specify-envelope-from t
+        message-auto-save-directory nil
         message-kill-buffer-on-exit t
         send-mail-function 'sendmail-send-it
         sendmail-program "/usr/local/bin/msmtp")
