@@ -718,6 +718,8 @@ messing with them.
            "* REMIND %?")
           ("n" "Note" item (file+olp "notes.org" "Inbox")
            "- %i%? (%a)")
+          ("s" "Scripture reading" item (file+olp "notes.org" "Scripture reading record")
+           "- %? %u")
           ("c" "Calendar entry" entry (file+olp "upcoming.org" "Miscellaneous")
            "* %?\n  %^{Calendar capture.}t")))
 #+END_SRC
