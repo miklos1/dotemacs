@@ -503,6 +503,7 @@ them.
     (notmuch-draft-folder (format "%s/Drafts" user-mail-address))
     (notmuch-fcc-dirs `((".*" . ,(format "%s/Sent" user-mail-address))))
     (notmuch-search-oldest-first nil)
+    (notmuch-show-logo nil)
     :init
     (define-advice compose-mail (:before (&rest ignored) "notmuch")
       ignored
