@@ -907,6 +907,19 @@ We define the following agenda views:
     ;; Ask AUCTeX to use PDFLaTeX
     (setq TeX-PDF-mode t))
 #+END_SRC
+** Zig
+#+BEGIN_SRC emacs-lisp
+  (use-package zig-mode
+    :defer t
+    :init
+    (add-hook 'zig-mode-hook #'lsp))
+
+  ;; Zig language server
+  (eval-after-load 'lsp-mode
+    (lambda ()
+      (setq lsp-zig-zls-executable
+            (expand-file-name "zls/zls" lsp-server-install-dir))))
+#+END_SRC
 ** Miscellaneous major modes
 #+BEGIN_SRC emacs-lisp
   ;; Writable grep buffers
