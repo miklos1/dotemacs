@@ -912,7 +912,8 @@ We define the following agenda views:
   (use-package zig-mode
     :defer t
     :init
-    (add-hook 'zig-mode-hook #'lsp))
+    (add-hook 'zig-mode-hook #'lsp)
+    (add-hook 'zig-mode-hook #'electric-pair-local-mode))
 
   ;; Zig language server
   (eval-after-load 'lsp-mode
