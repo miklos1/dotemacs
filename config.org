@@ -248,6 +248,7 @@ them.
     :init
     (marginalia-mode))
 #+END_SRC
+**** TODO Configure =embark= and =embark-consult=
 *** Which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -259,6 +260,15 @@ them.
   (global-set-key [remap list-buffers] #'ibuffer)
 #+END_SRC
 ** Finding files by name and by content
+*** Consult
+#+BEGIN_SRC emacs-lisp
+  (use-package consult
+    :bind (("C-c f r" . consult-recent-file)
+           ("C-c f d" . consult-find)
+           ("C-c s g" . consult-git-grep)
+           ("C-c s d" . consult-ripgrep)))
+#+END_SRC
+*** COMMENT Ivy and counsel
 #+BEGIN_SRC emacs-lisp
   (use-package ivy
     :defer t)
@@ -268,15 +278,7 @@ them.
            ("C-c f g" . counsel-git)
            ("C-c s g" . counsel-git-grep)
            ("C-c s d" . counsel-rg)))
-
-  (defun interactive-rgrep ()
-    "Recursively and interactively search directory."
-    (interactive)
-    (let ((initial-directory
-           (read-directory-name "Base directory: " nil nil t)))
-      (counsel-rg nil initial-directory)))
 #+END_SRC
-*** TODO Expand and configure this further!
 * Generic buffer editing, editing visuals, and buffer navigation
 ** Miscellaneous settings
 #+BEGIN_SRC emacs-lisp
@@ -508,7 +510,10 @@ them.
     (define-advice compose-mail (:before (&rest ignored) "notmuch")
       ignored
       (require 'notmuch)))
-
+#+END_SRC
+**** TODO Look up =consult-notmuch= if that exists
+**** COMMENT Live search
+#+BEGIN_SRC emacs-lisp
   (use-package counsel-notmuch
     :after notmuch
     :bind (:map notmuch-hello-mode-map
