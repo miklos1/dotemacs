@@ -625,20 +625,25 @@ the core =org= package, and enable the =ol-notmuch= module.
 #+END_SRC
 *** Set TODO keywords and dependencies
 By default, =org-mode= recognises the =TODO= and =DONE= keywords only.
-We extend this with two new types of actionable items:
+We add another two types of actionable items:
 + =NEXT= marks *next actions* according to GTD terminology.  They
   denote actions where it is immediately obvious what to do and how;
   there is no need to further break them down.
-+ =WAITING= marks actions to be done by someone else, that we are
-  merely *waiting for*.  Alternatively, with a timestamp or scheduling
-  it can mark appointments at specific times.
++ =WAIT= marks actions to be done by someone else, that we are merely
+  *waiting for*.
 Thus =TODO= remains for what GTD calls *projects*: tasks to be
 accomplished that usually need a closer analysis.
 #+BEGIN_SRC emacs-lisp
   (set 'org-todo-keywords nil)
   (add-to-list 'org-todo-keywords
-               '(type "TODO" "NEXT" "WAITING" "|" "DONE")
+               '(type "TODO" "NEXT" "WAIT" "|" "DONE")
                'append)
+#+END_SRC
+For activities that happen or must be done on a specific day or at
+specific times, such as meetings and appointments, we define =TIME=
+and =PAST=, so that they can be used as dependencies to broader tasks.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-todo-keywords '(type "TIME" "|" "PAST") 'append)
 #+END_SRC
 
 To be able to dim or hide blocked actions, we must enforce TODO
@@ -664,15 +669,15 @@ For the *incubator* and the *tickler*, we add some more keywords:
   specified day.
 + =WEEKLY= marks headings that come up at the /weekly/ review.  It may
   also be scheduled for further delay.
++ =CANCELLED= marks project that we no longer wish to pursue.
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'org-todo-keywords
-               '(sequence "REMIND" "WEEKLY" "|")
+               '(sequence "REMIND" "WEEKLY" "|" "CANCELLED")
                'append)
 #+END_SRC
 *** Agenda settings
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-start-on-weekday nil
+  (setq org-agenda-start-on-weekday 0
         org-agenda-window-setup 'other-window)
 #+END_SRC
 *** Org files
@@ -739,32 +744,41 @@ silently.  To offer the user a choice, we advise
 #+END_SRC
 *** Custom agenda commands
 We define the following agenda views:
-- Immediate view :: Today's calendar and a list next actions.  Entries
-  with one of several TODO keywords are hidden in the calendar for the
-  following reason:
-  - =REMIND= and =WEEKLY= :: Incubator entries are only for daily and
-    weekly reviews.
-  - =NEXT= :: They appear anyway in the list below, so we avoid
-    duplication.
-- Daily review :: Reminders from the "tickler", current "waiting for"
-  entries, and any stuck projects.
+- Immediate view :: Reminders from the "tickler", 3-day overview, next
+  actions list, current "waiting for" entries, and any stuck projects.
+- Daily view :: Detailed calendar of the day.
+- Weekly review :: Fortnight overview, list of active projects, weekly
+  reminders.
 
 #+BEGIN_SRC emacs-lisp
+  (defun default-org-agenda-skipper ()
+    "Skip incubator entries and scheduled entries."
+    (or (org-agenda-skip-entry-if 'todo '("REMIND" "WEEKLY"))
+        (org-agenda-skip-entry-if 'scheduled)))
+
   (setq org-agenda-custom-commands
         '(("i" "Immediate view"
-           ((agenda "" ((org-agenda-span 'day)
-                        (org-agenda-skip-function
-                         '(org-agenda-skip-entry-if
-                           'todo '("NEXT" "WEEKLY")))))
-            (todo "NEXT" ((org-agenda-overriding-header "Outstanding actions:")))
-            (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
-            (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")
-                          (org-agenda-dim-blocked-tasks 'invisible)))))
-          ("d" "Daily review"
            ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")
                             (org-agenda-dim-blocked-tasks 'invisible)))
-            (todo "WAITING" ((org-agenda-overriding-header "Waiting for:")))
-            (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")))))))
+            (agenda "" ((org-agenda-span 3)
+                        (org-agenda-skip-function #'default-org-agenda-skipper)
+                        (org-agenda-use-time-grid nil)))
+            (todo "NEXT" ((org-agenda-overriding-header "Outstanding actions:")))
+            (todo "TIME|WAIT" ((org-agenda-overriding-header "Waiting for:")
+                               (org-agenda-todo-ignore-timestamp 'future)))
+            (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")
+                          (org-agenda-dim-blocked-tasks 'invisible))))
+           ((org-agenda-tag-filter-preset '("-everyday"))))
+          ("d" "Day view" agenda ""
+           ((org-agenda-span 'day)
+            (org-agenda-skip-function #'default-org-agenda-skipper)))
+          ("w" "Weekly review"
+           ((agenda "" ((org-agenda-span 'fortnight)
+                        (org-agenda-skip-function #'default-org-agenda-skipper)
+                        (org-agenda-use-time-grid nil)))
+            (todo "TODO" ((org-agenda-overriding-header "Active projects:")))
+            (todo "WEEKLY" ((org-agenda-overriding-header "Weekly reminders:"))))
+           ((org-agenda-tag-filter-preset '("-everyday"))))))
 #+END_SRC
 *** Remainder
 #+BEGIN_SRC emacs-lisp
