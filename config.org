@@ -628,6 +628,18 @@ the core =org= package, and enable the =ol-notmuch= module.
     :config
     (add-hook 'org-mode-hook #'turn-on-auto-fill))
 #+END_SRC
+
+We use =org-mime= to compose HTML e-mails.
+#+BEGIN_SRC emacs-lisp
+  (use-package org-mime
+    :bind (:map message-mode-hook
+           ("C-c M-o" . org-mime-htmlize))
+    :config
+    (setq org-mime-export-options '(:with-latex dvipng
+                                    :section-numbers nil
+                                    :with-author nil
+                                    :with-toc nil)))
+#+END_SRC
 *** Set TODO keywords and dependencies
 By default, =org-mode= recognises the =TODO= and =DONE= keywords only.
 We add another two types of actionable items:
