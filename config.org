@@ -744,7 +744,7 @@ messing with them.
           ("s" "Scripture reading" item (file+olp "notes.org" "Scripture reading record")
            "- %? %u")
           ("c" "Calendar entry" entry (file+olp "upcoming.org" "Miscellaneous")
-           "* %?\n  %^{Calendar capture.}t")))
+           "* %?\n%^{Calendar capture.}t")))
 #+END_SRC
 
 =org-capture= saves the target file after committing the captured item
