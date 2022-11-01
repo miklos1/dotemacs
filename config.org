@@ -814,17 +814,6 @@ We define the following agenda views:
                    "GERMAN_SPELLER_RULE"
                    "LEERZEICHEN_HINTER_DOPPELPUNKT"))))
 #+END_SRC
-*** COMMENT Old configuration
-#+BEGIN_SRC elisp
-  ;; Org-mode
-  (add-hook 'org-mode-hook 'flyspell-mode t)
-  ;; (setq org-support-shift-select 'always)
-
-  ;; (setq org-agenda-default-appointment-duration 30)
-  (setq org-agenda-show-all-dates nil)
-
-  ;; (setq org-refile-targets '((org-agenda-files . (:level . 1))))
-#+END_SRC
 ** Language Server Protocol
 #+BEGIN_SRC emacs-lisp
   ;; Language server protocol settings
