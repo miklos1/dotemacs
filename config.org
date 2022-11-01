@@ -609,6 +609,9 @@ them.
   ;; Indent Common Lisp with spaces
   (add-to-list 'whitespace-global-modes 'lisp-mode)
   (add-hook 'lisp-mode-hook #'indent-with-spaces)
+
+  ;; Limited decoration for Common Lisp code
+  (add-to-list 'font-lock-maximum-decoration '(lisp-mode . 1))
 #+END_SRC
 ** Org mode
 *** =use-package= and customize modules
