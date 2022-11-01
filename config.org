@@ -700,6 +700,16 @@ For the *incubator* and the *tickler*, we add some more keywords:
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-start-on-weekday 0
         org-agenda-window-setup 'other-window)
+
+  ;; Disable buggy selection and revert mere completion when setting
+  ;; org-agenda filter
+  (defun disable-selection (orig &optional arg)
+    (let ((vertico-map minibuffer-local-completion-map)
+          (completion-cycle-threshold nil)
+          (completion-styles '(basic)))
+      (funcall orig arg)))
+
+  (advice-add #'org-agenda-filter :around #'disable-selection)
 #+END_SRC
 *** Org files
 #+BEGIN_SRC emacs-lisp
