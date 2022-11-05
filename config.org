@@ -48,10 +48,7 @@ Using =user-local-directory= instead of =user-emacs-directory=.
   ;; Get use-package and integrate it with straight.el
   (straight-use-package 'use-package)
   (setq straight-use-package-by-default t)
-
-  ;; Enable the :chords keyword in use-package
-  (use-package use-package-chords
-    :config (key-chord-mode t))
+  (require 'use-package)
 
   ;; Get delight for the :delight keyword in use-package
   (use-package delight)
@@ -387,9 +384,8 @@ them.
 ** Avy
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :chords (",." . avy-goto-subword-1)
     :bind (:map isearch-mode-map
-          ("<C-return>" . avy-isearch)))
+           ("<C-return>" . avy-isearch)))
 #+END_SRC
 * Specific minor modes
 ** Lisp editing
