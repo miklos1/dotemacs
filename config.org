@@ -482,6 +482,9 @@ them.
     (magit-diff-refine-hunk t)
     :config
     (add-hook 'after-save-hook #'magit-after-save-refresh-status))
+
+  (use-package forge
+    :after magit)
 #+END_SRC
 ** Mail
 #+BEGIN_SRC emacs-lisp
