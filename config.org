@@ -432,6 +432,13 @@ them.
       (flyspell-mode)
       (guess-language)))
 
+  (defun set-ispell-dictionary ()
+    (interactive)
+    ;; Disable guess language mode
+    (guess-language-mode -1)
+    ;; Change dictionary interactively
+    (call-interactively #'ispell-change-dictionary))
+
   (use-package langtool
     :defer t
     :bind (("s-;" . langtool-check)
