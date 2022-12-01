@@ -294,7 +294,12 @@ them.
 
   ;; Highlight some keywords
   (use-package hl-todo
-    :config (global-hl-todo-mode t))
+    :config
+    (dolist (assoc hl-todo-keyword-faces)
+      (rplacd assoc (list :inherit 'hl-todo)))
+    (global-hl-todo-mode t)
+    :custom-face
+    (hl-todo ((t (:weight bold)))))
 
   ;; Prettify page break characters in Help buffers
   (use-package page-break-lines
