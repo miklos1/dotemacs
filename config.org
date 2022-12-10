@@ -397,6 +397,13 @@ them.
            ("<C-return>" . avy-isearch)))
 #+END_SRC
 * Specific minor modes
+** Outline mode
+#+BEGIN_SRC emacs-lisp
+  (use-package outline
+    :straight nil
+    :custom
+    (outline-minor-mode-cycle t))
+#+END_SRC
 ** Lisp editing
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
@@ -633,6 +640,9 @@ them.
 
   ;; Limited decoration for Common Lisp code
   (add-to-list 'font-lock-maximum-decoration '(lisp-mode . 1))
+
+  ;; Enable Outline minor mode
+  (add-hook 'lisp-mode-hook #'outline-minor-mode)
 #+END_SRC
 ** Org mode
 *** =use-package= and customize modules
