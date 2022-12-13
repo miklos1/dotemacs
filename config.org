@@ -541,13 +541,12 @@ them.
       ignored
       (require 'notmuch)))
 #+END_SRC
-**** TODO Look up =consult-notmuch= if that exists
-**** COMMENT Live search
+**** Live search
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel-notmuch
+  (use-package consult-notmuch
     :after notmuch
     :bind (:map notmuch-hello-mode-map
-           ("s" . counsel-notmuch)))
+           ("s" . consult-notmuch)))
 #+END_SRC
 ** PDF tools
 #+BEGIN_SRC emacs-lisp
