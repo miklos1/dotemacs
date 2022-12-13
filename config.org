@@ -274,17 +274,6 @@ them.
   (use-package embark-consult
     :after consult)
 #+END_SRC
-*** COMMENT Ivy and counsel
-#+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :defer t)
-
-  (use-package counsel
-    :bind (("C-c f r" . counsel-buffer-or-recentf)
-           ("C-c f g" . counsel-git)
-           ("C-c s g" . counsel-git-grep)
-           ("C-c s d" . counsel-rg)))
-#+END_SRC
 * Generic buffer editing, editing visuals, and buffer navigation
 ** Miscellaneous settings
 #+BEGIN_SRC emacs-lisp
