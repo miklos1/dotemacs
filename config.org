@@ -248,8 +248,10 @@ them.
   (use-package marginalia
     :init
     (marginalia-mode))
+
+  (use-package embark
+    :bind (("C-." . embark-act)))
 #+END_SRC
-**** TODO Configure =embark= and =embark-consult=
 *** Which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
@@ -268,6 +270,9 @@ them.
            ("C-c f d" . consult-find)
            ("C-c s g" . consult-git-grep)
            ("C-c s d" . consult-ripgrep)))
+
+  (use-package embark-consult
+    :after consult)
 #+END_SRC
 *** COMMENT Ivy and counsel
 #+BEGIN_SRC emacs-lisp
