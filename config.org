@@ -978,6 +978,28 @@ We define the following agenda views:
       (setq lsp-zig-zls-executable
             (expand-file-name "zls/zls" lsp-server-install-dir))))
 #+END_SRC
+** OCaml
+#+BEGIN_SRC emacs-lisp
+  (let ((opam-share
+         (eval-when-compile
+           (ignore-errors
+             (car (process-lines "opam" "var" "share"))))))
+    (when (and opam-share (file-directory-p opam-share))
+      ;; Add opam load path
+      (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package tuareg
+    :defer t)
+
+  (use-package merlin
+    :straight nil
+    :hook ((tuareg-mode . merlin-mode))
+    :custom
+    ;; Use opam switch to lookup ocamlmerlin binary
+    (merlin-command 'opam))
+#+END_SRC
 ** Miscellaneous major modes
 #+BEGIN_SRC emacs-lisp
   ;; Writable grep buffers
