@@ -408,6 +408,38 @@ them.
             ielm-mode
             lisp-mode
             sly-mrepl-mode) . enable-paredit-mode))
+
+  (defun avy-kill-sexp (char &optional arg)
+    (interactive (list (read-char "char: " t)
+                       current-prefix-arg))
+    (save-excursion
+      (avy-goto-char-2 ?\( char arg)
+      (kill-sexp)
+      (let ((col (current-column))
+            end)
+        (if (and (looking-at "[ \t]*$")
+                 (<= col
+                     (save-excursion
+                       ;; Move
+                       (forward-line)
+                       (back-to-indentation)
+                       ;; Save point
+                       (setq end (point))
+                       ;; Return column
+                       (current-column))))
+            (delete-region (point) end)
+          (just-one-space)))
+      (paredit-close-round)))
+
+  (defun avy-yank-sexp (char &optional arg)
+    (interactive (list (read-char "char: " t)
+                       current-prefix-arg))
+    (save-excursion
+      (avy-goto-char-2 ?\( char arg)
+      (kill-ring-save (point)
+                      (save-excursion
+                        (forward-sexp)
+                        (point)))))
 #+END_SRC
 ** Flycheck
 #+BEGIN_SRC emacs-lisp
