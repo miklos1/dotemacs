@@ -881,14 +881,14 @@ We define the following agenda views:
 #+END_SRC
 *** Flashcards: =org-fc=
 #+BEGIN_SRC emacs-lisp
-  (use-package hydra)
+  (use-package hydra
+    :defer t)
+
   (use-package org-fc
     :straight
     (org-fc
      :type git :repo "https://git.sr.ht/~l3kn/org-fc"
      :files (:defaults "awk" "demo.org"))
-    :custom
-    (org-fc-directories '("~/git/"))
     :config
     (require 'org-fc-hydra))
 #+END_SRC
