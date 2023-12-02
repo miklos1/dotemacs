@@ -684,6 +684,7 @@ the core =org= package, and enable the =ol-notmuch= module.
            ("C-c l" . org-store-link))
     :custom
     (org-modules '(ol-docview ol-info ol-notmuch))
+    (org-image-actual-width nil)
     :config
     (add-hook 'org-mode-hook #'turn-on-auto-fill))
 #+END_SRC
