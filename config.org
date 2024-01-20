@@ -844,6 +844,10 @@ We define the following agenda views:
 
   (setq org-agenda-custom-commands
         '(("i" "Immediate view"
+           ((agenda "" ((org-agenda-span 'day)
+                        (org-agenda-skip-function #'default-org-agenda-skipper)))
+            (tags-todo "today" ((org-agenda-overriding-header "For today:")))))
+          ("d" "Daily review"
            ((todo "REMIND" ((org-agenda-overriding-header "Reminders:")
                             (org-agenda-dim-blocked-tasks 'invisible)))
             (agenda "" ((org-agenda-span 3)
@@ -855,9 +859,6 @@ We define the following agenda views:
             (todo "TODO" ((org-agenda-overriding-header "Stuck projects:")
                           (org-agenda-dim-blocked-tasks 'invisible))))
            ((org-agenda-tag-filter-preset '("-everyday"))))
-          ("d" "Day view" agenda ""
-           ((org-agenda-span 'day)
-            (org-agenda-skip-function #'default-org-agenda-skipper)))
           ("w" "Weekly review"
            ((agenda "" ((org-agenda-span 'fortnight)
                         (org-agenda-skip-function #'default-org-agenda-skipper)
