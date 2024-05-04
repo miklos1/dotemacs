@@ -13,8 +13,7 @@
 *** Configuration
 #+BEGIN_SRC emacs-lisp
   ;; Optimise start-up time
-  (setq straight-base-dir user-local-directory
-        straight-check-for-modifications '(find-when-checking)
+  (setq straight-check-for-modifications '(find-when-checking)
         straight-enable-package-integration nil)
 #+END_SRC
 *** Bootstrap code snippet
@@ -119,9 +118,6 @@ directory.
 
   (global-set-key (kbd "s-b") #'bury-buffer)
 
-  ;; Make request.el use `var' directory
-  (set 'request-storage-directory (concat user-var-directory "request"))
-
   ;; Disable transient history
   (set 'transient-save-history nil)
 #+END_SRC
@@ -176,7 +172,7 @@ them.
 #+BEGIN_SRC emacs-lisp
   (setq backup-by-copying-when-linked t
         backup-by-copying-when-mismatch t
-        backup-directory-alist `(("." . ,(concat user-var-directory "backups")))
+        backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
         delete-old-versions t
         kept-new-versions 8
         kept-old-versions 1
@@ -189,8 +185,7 @@ them.
 #+END_SRC
 ** Automatically save place in files
 #+BEGIN_SRC emacs-lisp
-  (setq save-place-file (concat user-var-directory "places")
-        save-place-version-control 'never)
+  (setq save-place-version-control 'never)
   (save-place-mode t)
 #+END_SRC
 ** Maintain a list of recent files
@@ -199,9 +194,8 @@ them.
     :straight nil
     :config
     (dolist (path `(,(expand-file-name "../lisp" data-directory)
-                    ,(expand-file-name "straight" user-local-directory)))
+                    ,(expand-file-name "straight" straight-base-dir)))
       (add-to-list 'recentf-exclude (concat "^" (regexp-quote path))))
-    (setq recentf-save-file (concat user-var-directory "recentf"))
     (recentf-mode t))
 #+END_SRC
 *** TODO Consider configuring =recentf-auto-cleanup=
@@ -504,10 +498,6 @@ them.
     :straight nil
     :bind ("s-t" . eshell)
     :custom
-    (eshell-directory-name
-     (expand-file-name "eshell" user-var-directory))
-    (eshell-aliases-file
-     (expand-file-name "eshell_aliases" user-emacs-directory))
     (eshell-last-dir-ring-file-name nil))
 #+END_SRC
 ** COMMENT Terminal emulation
@@ -917,15 +907,7 @@ We define the following agenda views:
     :init
     (setq read-process-output-max (* 1024 1024))
     (setq lsp-diagnostics-provider :none
-          lsp-modeline-diagnostics-enable nil)
-    :config
-    ;; Use `local' and `var' directories
-    (setq lsp-server-install-dir
-          (expand-file-name "lsp" user-local-directory))
-    (setq lsp-session-file
-          (let* ((default-file-name (file-name-nondirectory lsp-session-file))
-                 (file-name (string-trim default-file-name (regexp-quote "."))))
-            (expand-file-name file-name user-var-directory))))
+          lsp-modeline-diagnostics-enable nil))
 
   (use-package lsp-ui
     :after lsp-mode
