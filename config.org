@@ -7,14 +7,6 @@
   ;; In interactive sessions, save a little IO time by skipping the
   ;; mtime checks on every *.elc file.
   (setq load-prefer-newer noninteractive)
-
-  ;; Set common directories to be used by various things
-  (defconst user-local-directory (concat user-emacs-directory "local/")
-    "Directory for locally installed Emacs Lisp packages, language
-    servers and other tools.")
-  (defconst user-var-directory (concat user-emacs-directory "var/")
-    "User directory for potentially sensitive data that is not
-    necessary for functionality, such as histories, backups, etc.")
 #+END_SRC
 * Package management
 ** Bootstrap =straight.el=
