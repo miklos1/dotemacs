@@ -48,25 +48,6 @@
   (use-package delight)
 #+END_SRC
 * Configure for host operating system
-** Initialize environment from shell
-#+BEGIN_SRC emacs-lisp
-  (use-package exec-path-from-shell)
-
-  (defconst +saved-shell-environ+
-    (eval-when-compile
-      (exec-path-from-shell-getenvs exec-path-from-shell-variables))
-    "Shell environment configuration saved at compile time.")
-
-  (dolist (pair +saved-shell-environ+)
-    (cl-destructuring-bind (name . value) pair
-      (exec-path-from-shell-setenv name value)))
-#+END_SRC
-** Homebrew
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'exec-path "/usr/local/bin")
-  (let ((default-directory "/usr/local/share/emacs/site-lisp/"))
-    (normal-top-level-add-subdirs-to-load-path))
-#+END_SRC
 ** Trash
 #+BEGIN_SRC emacs-lisp
   (unless (executable-find "trash")
@@ -92,16 +73,6 @@
              (warn "Failure to find GNU `ls' on the host system.")
              nil)))
     "Whether GNU `ls' is available on the system.")
-#+END_SRC
-** =default-directory=
-On macOS, when launching Emacs from Launcher, the filesystem root
-becomes the current working directory.  We correct this to the home
-directory.
-
-#+BEGIN_SRC emacs-lisp
-  (when (and (eq window-system 'ns)
-             (equal default-directory "/"))
-    (setq default-directory "~/"))
 #+END_SRC
 * Load personal settings
 #+BEGIN_SRC emacs-lisp
