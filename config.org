@@ -497,7 +497,7 @@ them.
         message-auto-save-directory nil
         message-kill-buffer-on-exit t
         send-mail-function 'sendmail-send-it
-        sendmail-program "/usr/local/bin/msmtp")
+        sendmail-program (executable-find "msmtp"))
 #+END_SRC
 *** Notmuch
 #+BEGIN_SRC emacs-lisp
