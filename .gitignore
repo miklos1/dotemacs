@@ -1,5 +1,12 @@
-/local/
-/var/
+/auto-save-list/
+/backups/
+/eshell/
+/straight/
+
+/org-roam.db
+/org-fc-reviews.tsv
+/places
+/recentf
 
 /config.el
 /personal.el
