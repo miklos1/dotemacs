@@ -444,7 +444,7 @@ them.
            ("s-:" . langtool-check-done))
     :config
     (setq langtool-language-tool-server-jar
-          "/usr/local/opt/languagetool/libexec/languagetool-server.jar"
+          "/opt/homebrew/opt/languagetool/libexec/languagetool-server.jar"
           langtool-server-user-arguments
           `("--port" "8082" "--config"
             ,(expand-file-name
