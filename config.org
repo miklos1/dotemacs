@@ -360,11 +360,11 @@ them.
   (use-package paredit
     :straight (paredit :depth full)
     :demand t
-    :hook ((emacs-lisp-mode
-            eval-expression-minibuffer-setup
-            ielm-mode
-            lisp-mode
-            sly-mrepl-mode) . enable-paredit-mode))
+    ;; Disable:
+    ;; - eval-expression-minibuffer-setup
+    ;; - ielm-mode
+    ;; - sly-mrepl-mode
+    :hook ((emacs-lisp-mode lisp-mode) . enable-paredit-mode))
 
   (defun avy-kill-sexp (char &optional arg)
     (interactive (list (read-char "char: " t)
