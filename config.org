@@ -1015,6 +1015,11 @@ We define the following agenda views:
     ;; Use opam switch to lookup ocamlmerlin binary
     (merlin-command 'opam))
 #+END_SRC
+** Ledger
+#+BEGIN_SRC emacs-lisp
+  (use-package ledger-mode
+    :defer t)
+#+END_SRC
 ** Miscellaneous major modes
 #+BEGIN_SRC emacs-lisp
   ;; Writable grep buffers
