@@ -541,6 +541,25 @@ them.
     :bind (:map notmuch-hello-mode-map
            ("s" . consult-notmuch)))
 #+END_SRC
+** Newsreader
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :bind (("C-x w" . elfeed)))
+
+  (use-package elfeed-tube
+    :after elfeed
+    :demand t
+    :config
+    (elfeed-tube-setup)
+    :custom
+    ((elfeed-tube-invidious-url "https://invidious.io"))
+    :bind (:map elfeed-show-mode-map
+                ("F" . elfeed-tube-fetch)
+                ([remap save-buffer] . elfeed-tube-save)
+                :map elfeed-search-mode-map
+                ("F" . elfeed-tube-fetch)
+                ([remap save-buffer] . elfeed-tube-save)))
+#+END_SRC
 ** PDF tools
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
